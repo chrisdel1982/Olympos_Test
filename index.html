@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1a472a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="shortcut icon" href="favicon.ico">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Όλυμπος FC</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/main.css">
+       <script>
+window.addEventListener('load', function() {
+    // Εδώ ρυθμίζεις πόση ώρα θα μείνει (3000 = 3 δευτερόλεπτα)
+    setTimeout(function() {
+        var splash = document.getElementById('custom-splash');
+        splash.classList.add('splash-hidden');
+        
+        setTimeout(function() {
+            splash.style.display = 'none';
+        }, 500);
+        
+    }, 500); // <-- ΧΡΟΝΟΣ ΑΝΑΜΟΝΗΣ
+});
+// ΣΥΝΑΡΤΗΣΗ ΓΙΑ TOAST NOTIFICATIONS 🍞
+function showToast(message, type = 'success') {
+    const container = document.getElementById('toast-container');
+    
+    // Δημιουργία του στοιχείου
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    
+    // Εικονίδιο ανάλογα τον τύπο
+    const icon = type === 'success' ? '✅' : '⚠️';
+    
+    toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
+    
+    // Προσθήκη στη σελίδα
+    container.appendChild(toast);
+
+    // Εμφάνιση (με μικρή καθυστέρηση για να παίξει το animation)
+    requestAnimationFrame(() => {
+        toast.classList.add('show');
+    });
+
+    // Αυτόματη αφαίρεση μετά από 3 δευτερόλεπτα
+    setTimeout(() => {
+        toast.classList.remove('show');
+        // Περιμένουμε να τελειώσει το animation εξαφάνισης πριν το διαγράψουμε τελείως
+        setTimeout(() => {
+            toast.remove();
+        }, 300); 
+    }, 3000);
+}
+</script>
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "f3dc6a18-326d-4cb9-a216-0930598247df",
+    });
+  });
+</script>
+</script>
+</head>
+<body>
+    <div id="custom-splash">
+    <img src="logo_front.png" alt="Logo" class="splash-logo">
+</div>
+    <header>
+<div id="announcement-ticker">
+            <span id="announcement-text"></span>
+        </div>
+        <div class="header-top">
+            <div class="logo">
+    <img src="android-chrome-192x192.png" alt="Όλυμπος Δενδροποτάμου">
+</div>
+            <div class="club-info">
+                <h1>ΟΛΥΜΠΟΣ ΔΕΝΔΡΟΠΟΤΑΜΟΥ</h1>
+                <p>Κ14 | ΕΠΣ ΜΑΚΕΔΟΝΙΑΣ | Σεζόν 2025-26</p>
+            </div>
+        </div>
+        <nav>
+    <div class="hamburger">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+    </div>
+
+    <ul class="nav-menu">
+        <li><a href="#standings" class="nav-link active">My Όλυμπος</a></li>
+        <li><a href="#results" class="nav-link">Αποτελέσματα</a></li>
+        <li><a href="#fixtures" class="nav-link">Πρόγραμμα</a></li>
+        <li><a href="#roster" class="nav-link">Ρόστερ</a></li>
+        <li><a href="#news" class="nav-link" onclick="markNewsAsRead()">Νέα - Ειδήσεις <span id="newsBadge" class="notification-badge">NEW</span></a></li>
+        <li><a href="#admin" class="nav-link admin-link" onclick="openAdminPanel(); return false;">⚙️</a></li>
+    </ul>
+</nav>
+    </header>
+
+    <div class="container">
+        <div id="standings" class="page active">
+            <div id="nextMatchContainer"></div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h2>📊 Βαθμολογία Κ14 - ΔΥΤΙΚΟΣ</h2>
+                </div>
+                
+                <div class="table-wrapper">
+                    <table id="standingsTable">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Θέση</th>
+                                <th style="text-align: left;">Ομάδα</th>
+                                <th style="width: 60px;">Β</th> <th style="width: 50px;">Αγ</th>
+                                <th style="width: 50px;">Ν</th>
+                                <th style="width: 50px;">Ι</th>
+                                <th style="width: 50px;">Η</th>
+                                <th style="width: 70px;">ΓΥ-ΓΚ</th>
+                                <th style="width: 110px;">Φόρμα</th>
+                            </tr>
+                        </thead>
+                        <tbody id="standingsBody"></tbody>
+                    </table>
+                </div>
+
+                <div style="margin-top: 1rem; font-size: 0.9rem; color: #666;">
+                    <strong>Υπόμνημα:</strong> Αγ=Αγώνες, Ν=Νίκες, Ι=Ισοπαλίες, Η=Ήττες, ΓΥ=Γκολ Υπέρ, ΓΚ=Γκολ Κατά, Β=Βαθμοί
+                </div>
+            </div> 
+
+            <div class="card">
+                <div class="card-header">
+                    <h2>👟 Σκόρερ</h2>
+                </div>
+                <div id="scorersContainer"></div>
+            </div>
+        </div>
+
+        <div id="results" class="page">
+            <div class="card">
+                <h2>⚽ Αποτελέσματα Αγώνων</h2>
+                <div id="resultsContainer"></div>
+            </div>
+        </div>
+
+        <div id="fixtures" class="page">
+            <div class="card">
+                <h2>📅 Πρόγραμμα Αγώνων</h2>
+                <div id="fixturesContainer"></div>
+            </div>
+        </div>
+
+        <div id="roster" class="page">
+            <div class="card">
+                <div class="card-header">
+                    <h2>👥 Ρόστερ Ομάδας</h2>
+                </div>
+                <div id="rosterContainer" class="roster-grid"></div>
+            </div>
+        </div>
+
+        <!-- Νέα - Ειδήσεις Page -->
+        <div id="news" class="page">
+            <div class="card">
+                <div class="card-header">
+                    <h2>📰 Νέα - Ειδήσεις</h2>
+                </div>
+                <div id="newsContainer"></div>
+            </div>
+        </div>
+    </div>
+<footer style="background: var(--primary-color); color: white; text-align: center; padding: 2rem 1rem; margin-top: 3rem;">
+    <div style="max-width: 1200px; margin: 0 auto;">
+        <h3 style="color: var(--accent-color); margin-bottom: 0.5rem;">ΟΛΥΜΠΟΣ ΔΕΝΔΡΟΠΟΤΑΜΟΥ</h3>
+        <p style="opacity: 0.8; font-size: 0.9rem;">Μια οικογένεια, μια ομάδα, ένα πάθος.</p>
+        <div style="margin-top: 1.5rem; font-size: 0.8rem; opacity: 0.6;">
+            &copy; 2025 Created for K14 Team
+        </div>
+    </div>
+</footer>
+    <div id="adminModal" class="modal">
+        <div class="modal-content">
+            <h2>🔐 Admin Panel</h2>
+            
+            <div id="loginForm">
+                <div class="form-group">
+                    <label>Κωδικός Admin:</label>
+                    <input type="password" id="adminPassword" placeholder="Εισάγετε κωδικό" onkeydown="if(event.key === 'Enter') checkPassword()">
+                </div>
+                <div class="modal-buttons">
+                    <button class="btn" onclick="checkPassword()">Είσοδος</button>
+                    <button class="btn btn-secondary" onclick="closeAdminPanel()">Ακύρωση</button>
+                </div>
+            </div>
+
+            <div id="adminContent" style="display: none;">
+                <div class="form-group">
+                    <label>📦 Διαχείριση Δεδομένων:</label>
+                    <div class="action-buttons">
+                        <button class="btn btn-success" onclick="exportData()">💾 Export Δεδομένων</button>
+                        <div class="file-input-wrapper">
+                            <input type="file" id="importFile" accept=".json" onchange="importData(event)">
+                            <label for="importFile" class="file-input-label">📥 Import Δεδομένων</label>
+                        </div>
+                    </div>
+                    <p style="margin-top: 0.5rem; font-size: 0.85rem; color: #666;">
+                        Κάνε backup των δεδομένων σου τακτικά!
+                    </p>
+                </div>
+<h3 style="margin-top: 1.5rem;">📢 Ρυθμίσεις Επόμενου Αγώνα</h3>
+
+<div class="form-group">
+    <label>Κυλιόμενη Ανακοίνωση (Ticker):</label>
+    <input type="text" id="announcementInput" placeholder="π.χ. Καλή επιτυχία...">
+</div>
+
+<!-- ΝΕΟ: Checkbox για Εμβόλιμο Αγώνα -->
+<div class="form-group" style="display: flex; align-items: center; gap: 10px; background: #fff3cd; padding: 1rem; border-radius: 8px; border: 2px solid #ffc107;">
+    <input type="checkbox" id="useSpecialMatchCheckbox" style="width: 20px; height: 20px;" onchange="toggleSpecialMatchFields()">
+    <label for="useSpecialMatchCheckbox" style="margin: 0; cursor: pointer; font-weight: 700; color: #856404;">
+        🏆 Εμβόλιμος Αγώνας (Φιλικό, Κύπελλο κτλ) - Προτεραιότητα στο Banner
+    </label>
+</div>
+
+<!-- ΝΕΑ ΠΕΔΙΑ ΓΙΑ ΤΟΝ ΕΜΒΟΛΙΜΟ ΑΓΩΝΑ -->
+<div id="specialMatchFields" style="display: none; background: #f8f9fa; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+    <div class="form-group">
+        <label>Τύπος Αγώνα (π.χ. ΦΙΛΙΚΟΣ, ΚΥΠΕΛΛΟ):</label>
+        <input type="text" id="specialMatchTypeInput" placeholder="π.χ. ΦΙΛΙΚΟΣ ΑΓΩΝΑΣ">
+    </div>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+        <div class="form-group">
+            <label>Γηπεδούχος:</label>
+            <input type="text" id="specialHomeInput" placeholder="π.χ. ΟΛΥΜΠΟΣ ΔΕΝΔΡΟΠΟΤΑΜΟΥ">
+        </div>
+        <div class="form-group">
+            <label>Φιλοξενούμενη:</label>
+            <input type="text" id="specialAwayInput" placeholder="π.χ. ΑΟ ΑΜΠΕΛΟΚΗΠΩΝ">
+        </div>
+    </div>
+</div>
+
+<!-- ΚΑΝΟΝΙΚΑ ΠΕΔΙΑ (για όλους τους αγώνες) -->
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+    <div class="form-group">
+        <label>Ημερομηνία (Πάνω Αριστερά):</label>
+        <input type="text" id="matchDateInput" placeholder="π.χ. ΣΑΒ 13/12">
+    </div>
+    <div class="form-group">
+        <label>Ώρα (Πάνω Δεξιά):</label>
+        <input type="text" id="matchTimeInput" placeholder="π.χ. 10:45">
+    </div>
+</div>
+<div class="form-group" style="background: #e8f5e9; padding: 10px; border-radius: 5px; border: 1px solid #c8e6c9; margin-top: 10px;">
+    <label style="color: #1b5e20; font-weight: bold;">⏳ Ρύθμιση Αντίστροφης Μέτρησης (Ακριβής Ώρα):</label>
+    <input type="datetime-local" id="countdownTargetInput" style="background: white; border: 1px solid #a5d6a7;">
+    <small style="color: #555; display: block; margin-top: 5px;">
+        💡 <b>Προσοχή:</b> Αυτό ρυθμίζει <u>μόνο</u> το ρολόι που μετράει αντίστροφα.
+        Η ημερομηνία/ώρα που φαίνεται στην κάρτα είναι αυτή που γράφεις στα από πάνω κουτάκια.
+    </small>
+</div>
+<div class="form-group">
+    <label>Γήπεδο (Κάτω από ομάδες):</label>
+    <input type="text" id="matchStadiumInput" placeholder="π.χ. Γήπεδο Αμπελοκήπων">
+</div>
+
+<div class="form-group">
+    <label>Link Χάρτη (Google Maps):</label>
+    <input type="text" id="matchMapLinkInput" placeholder="Επικόλληση link...">
+</div>
+        <div class="form-group" style="background: #fff3f3; padding: 15px; border-radius: 10px; border: 1px solid #ffc1c1; margin-bottom: 20px;">
+    <label style="color: #d32f2f; font-weight: bold; display: block; margin-bottom: 10px;">🔴 ΖΩΝΤΑΝΟ ΣΚΟΡ (LIVE)</label>
+    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+        <input type="checkbox" id="liveModeCheckbox" style="width: 20px; height: 20px;" onchange="document.getElementById('liveInputs').style.display = this.checked ? 'block' : 'none'">
+        <label for="liveModeCheckbox">Ενεργοποίηση Live Mode</label>
+    </div>
+   <div id="liveInputs" style="display: none;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+        <input type="number" id="liveHomeScore" value="0" style="text-align: center;">
+        <input type="number" id="liveAwayScore" value="0" style="text-align: center;">
+    </div>
+    
+    <div style="background: #fff; padding: 10px; border-radius: 5px; border: 1px solid #ddd; color: #333; margin-bottom:10px;">
+        <label style="font-size: 0.8rem; font-weight: bold; display: block; margin-bottom: 5px;">⏱️ Ρυθμίσεις Χρονομέτρου:</label>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px;">
+            <div>
+                <small style="display:block; font-size:0.7rem;">Ημίχρονο:</small>
+                <select id="liveHalf" style="padding:5px;">
+                    <option value="1">1ο</option>
+                    <option value="2">2ο</option>
+                    <option value="HT">HT (Ημίχρονο)</option>
+                    <option value="3">3ο</option>
+                    <option value="4">4ο</option>
+                    <option value="FT">FT (Τέλος)</option>
+                </select>
+                 </div>
+                 <div>
+                <small style="display:block; font-size:0.7rem;">Διάρκεια (λ):</small>
+                <input type="number" id="liveHalfDuration" value="20" style="text-align: center; padding:5px;">
+                 </div>
+                     <div>
+                <small style="display:block; font-size:0.7rem;">Έναρξη:</small>
+                <input type="time" id="liveStartTime" style="text-align: center; padding:5px;">
+                     </div>
+                     </div>
+                    </div>
+                </div>
+                <div class="modal-buttons" style="margin-bottom: 1.5rem;">
+                 <button class="btn btn-success" onclick="saveGeneralSettings()">💾 Αποθήκευση</button>
+                </div>
+                    </div>
+                <h3>⚽ Αποτελέσματα Αγώνων</h3>
+
+                <div class="form-group">
+                    <label>Επέλεξε Αγωνιστική:</label>
+                    <select id="roundSelect" onchange="loadMatchesForRound()">
+                        <option value="">-- Επέλεξε --</option>
+                    </select>
+                </div>
+
+                <div id="matchInputs"></div>
+
+                <div class="modal-buttons">
+                    <button class="btn" onclick="saveResults()">💾 Αποθήκευση Αποτελεσμάτων</button>
+                </div>
+
+                <h3>👥 Διαχείριση Ρόστερ</h3>
+
+                <div class="form-group">
+                    <label>Αριθμός Φανέλας:</label>
+                    <input type="number" id="playerNumber" placeholder="π.χ. 10" min="1" max="99">
+                </div>
+
+                <div class="form-group">
+                    <label>Όνομα Παίκτη:</label>
+                    <input type="text" id="playerName" placeholder="π.χ. Γιώργος Παπαδόπουλος">
+                </div>
+<div class="form-group">
+    <label>Έτος Γέννησης (για υπολογισμό ηλικίας):</label>
+    <input type="number" id="playerBirthYear" placeholder="π.χ. 2011">
+</div>
+                <div class="form-group">
+    <label>Θέση(εις) - Κράτα Ctrl για πολλαπλές επιλογές:</label>
+    <select id="playerPosition" multiple size="8" style="height: auto;">
+        <option value="">-- Επέλεξε Θέση(εις) --</option>
+        <optgroup label="👨‍🏫 Προπονητής">
+            <option value="Προπονητής">Προπονητής</option>
+        </optgroup>
+        <optgroup label="🥅 Τερματοφύλακας">
+            <option value="Τερματοφύλακας (GK)">Τερματοφύλακας (GK)</option>
+        </optgroup>
+        <optgroup label="🛡️ Αμυντικοί">
+            <option value="Κεντρικός Αμυντικός (CB)">Κεντρικός Αμυντικός (CB)</option>
+            <option value="Λίμπερο (SW)">Λίμπερο (SW)</option>
+            <option value="Πλάγιος Αμυντικός - Αριστερός (LB)">Πλάγιος Αμυντικός - Αριστερός (LB)</option>
+            <option value="Πλάγιος Αμυντικός - Δεξιός (RB)">Πλάγιος Αμυντικός - Δεξιός (RB)</option>
+            <option value="Ακραίος Αμυντικός - Αριστερός (LWB)">Ακραίος Αμυντικός (φουλ-μπακ) - Αριστερός (LWB)</option>
+            <option value="Ακραίος Αμυντικός - Δεξιός (RWB)">Ακραίος Αμυντικός (φουλ-μπακ) - Δεξιός (RWB)</option>
+        </optgroup>
+        <optgroup label="⚙️ Μέσοι">
+            <option value="Κεντρικός Μέσος (CM)">Κεντρικός Μέσος (CM)</option>
+            <option value="Αμυντικός Μέσος (DM)">Αμυντικός Μέσος (DM)</option>
+            <option value="Επιθετικός Μέσος (AM)">Επιθετικός Μέσος (AM)</option>
+            <option value="Πλάγιος Μέσος - Αριστερός (LM)">Πλάγιος Μέσος - Αριστερός (LM)</option>
+            <option value="Πλάγιος Μέσος - Δεξιός (RM)">Πλάγιος Μέσος - Δεξιός (RM)</option>
+        </optgroup>
+        <optgroup label="⚡ Επιθετικοί">
+            <option value="Κεντρικός Επιθετικός (CF)">Κεντρικός Επιθετικός (CF)</option>
+            <option value="Δεύτερος Επιθετικός (SS)">Δεύτερος Επιθετικός (SS)</option>
+            <option value="Πλάγιος Επιθετικός - Αριστερός (LW)">Πλάγιος Επιθετικός - Αριστερός (LW)</option>
+            <option value="Πλάγιος Επιθετικός - Δεξιός (RW)">Πλάγιος Επιθετικός - Δεξιός (RW)</option>
+        </optgroup>
+    </select>
+    <small style="color: #666; font-size: 0.85rem; display: block; margin-top: 0.5rem;">
+        💡 Συμβουλή: Κράτα το Ctrl (ή Cmd σε Mac) και κλικ για να επιλέξεις πολλές θέσεις
+    </small>
+</div>
+
+<div class="form-group" style="display: flex; align-items: center; gap: 10px; margin-top: 1rem;">
+                    <input type="checkbox" id="isCaptainPlayer" style="width: 20px; height: 20px;">
+                    <label for="isCaptainPlayer" style="margin: 0; cursor: pointer;">©️ Είναι Αρχηγός (Captain);</label>
+                </div>
+
+                <div class="modal-buttons">
+                    <button class="btn btn-success" onclick="addPlayer()">➕ Προσθήκη Παίκτη</button>
+                    <button class="btn" onclick="clearPlayerForm()">🔄 Καθαρισμός</button>
+                </div>
+
+                <div style="margin-top: 1.5rem;">
+                    <label style="font-weight: 600; margin-bottom: 0.5rem; display: block;">Τρέχοντες Παίκτες:</label>
+                    <div id="rosterList" class="roster-list"></div>
+                </div>
+
+            <h3 style="margin-top: 2rem;">📰 Διαχείριση Νέων - Ειδήσεων</h3>
+
+<div class="form-group">
+    <label>Τίτλος Είδησης:</label>
+    <input type="text" id="newsTitle" placeholder="π.χ. Μεγάλη νίκη επί του...">
+</div>
+
+<div class="form-group">
+    <label>Περιεχόμενο Είδησης:</label>
+    <textarea id="newsContent" placeholder="Γράψε το περιεχόμενο της είδησης εδώ..." rows="5" style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 5px; font-family: inherit; resize: vertical;"></textarea>
+</div>
+
+<div class="form-group">
+    <label>Φωτογραφία (Προαιρετικό):</label>
+    <div class="file-input-wrapper">
+        <input type="file" id="newsPhoto" accept="image/*" onchange="previewNewsPhoto(event)">
+        <label for="newsPhoto" class="file-input-label">📷 Επιλογή Φωτογραφίας</label>
+    </div>
+    <div id="newsPhotoPreview" style="margin-top: 1rem; display: none;">
+        <img id="newsPhotoPreviewImg" style="max-width: 100%; max-height: 300px; border-radius: 10px; border: 2px solid #ddd;">
+        <button class="btn btn-danger btn-small" onclick="removeNewsPhoto()" style="margin-top: 0.5rem;">🗑️ Αφαίρεση Φωτογραφίας</button>
+    </div>
+</div>
+
+<div class="modal-buttons">
+    <button class="btn btn-success" onclick="addNews()">➕ Προσθήκη Είδησης</button>
+    <button class="btn" onclick="clearNewsForm()">🔄 Καθαρισμός</button>
+</div>
+
+                <div style="margin-top: 1.5rem;">
+                    <label style="font-weight: 600; margin-bottom: 0.5rem; display: block;">Τρέχουσες Ειδήσεις:</label>
+                    <div id="newsList" class="roster-list"></div>
+                </div>
+
+                <div class="modal-buttons" style="margin-top: 2rem; padding-top: 1rem; border-top: 2px solid #ddd;">
+                    <button class="btn btn-secondary" onclick="closeAdminPanel()">Κλείσιμο</button>
+                    <button class="btn btn-danger" onclick="resetAllData()">⚠️ Επαναφορά Όλων</button>
+                </div>
+            </div>
+        </div>
+    </div>
+<div id="shareModal" class="share-modal" onclick="closeShareModal()">
+    <div class="share-modal-content" onclick="event.stopPropagation()">
+        <h3 style="margin-bottom: 10px; color: var(--primary-color);">📤 Κοινοποίηση</h3>
+        <p id="shareTitlePreview" style="font-size: 0.9rem; color: #666; margin-bottom: 1rem;"></p>
+        
+        <div class="share-options">
+            <div class="share-option" onclick="doShare('whatsapp')">
+                <div class="share-icon">
+                    <i class="fab fa-whatsapp"></i>
+                </div>
+                <div class="share-text">WhatsApp</div>
+            </div>
+            
+            <div class="share-option" onclick="doShare('viber')">
+                <div class="share-icon">
+                    <i class="fab fa-viber"></i>
+                </div>
+                <div class="share-text">Viber</div>
+            </div>
+            
+            <div class="share-option" onclick="doShare('copy')">
+                <div class="share-icon">
+                    <i class="fas fa-copy"></i>
+                </div>
+                <div class="share-text">Αντιγραφή</div>
+            </div>
+            
+             <div class="share-option" onclick="doShare('facebook')">
+                <div class="share-icon">
+                    <i class="fab fa-facebook-f"></i>
+                </div>
+                <div class="share-text">Facebook</div>
+            </div>
+        </div>
+        <button class="btn btn-secondary" style="width: 100%; margin-top: 1.5rem;" onclick="closeShareModal()">Ακύρωση</button>
+    </div>
+</div>
+<div id="squadModal" class="modal" style="z-index: 3000;">
+    <div class="modal-content" style="max-width: 500px;">
+        <h3 style="color: var(--primary-color); border-bottom: 2px solid var(--accent-color); padding-bottom: 10px;">
+            📋 Επιλογή Αποστολής
+        </h3>
+        
+        <p style="font-size: 0.85rem; color: #666; margin-bottom: 1rem;">
+            Επίλεξε τους παίκτες για το μήνυμα.
+        </p>
+
+        <div class="form-group" style="display: flex; align-items: center; gap: 10px; background: #fff3e0; padding: 10px; border-radius: 5px; border: 1px solid #ffcc80; margin-bottom: 1rem;">
+            <input type="checkbox" id="noSquadCheckbox" style="width: 20px; height: 20px; cursor: pointer;">
+            <label for="noSquadCheckbox" style="margin: 0; font-weight: bold; color: #e65100; cursor: pointer; font-size: 0.95rem;">
+                🚫 Μην στείλεις καθόλου ονόματα (Μόνο Γήπεδο/Ώρα)
+            </label>
+        </div>
+
+        <div id="squadList" style="max-height: 250px; overflow-y: auto; background: #f9f9f9; padding: 10px; border: 1px solid #ddd; border-radius: 5px; margin-bottom: 1rem;">
+            </div>
+
+        <div class="form-group">
+            <label style="font-size: 0.9rem;">➕ Προσθήκη από Κ13 (ή άλλοι):</label>
+            <input type="text" id="extraPlayersInput" placeholder="π.χ. Παπαδόπουλος (Κ13)" style="font-size: 0.9rem;">
+        </div>
+
+        <div class="modal-buttons">
+            <button class="btn" style="background: var(--primary-color); width: 100%;" onclick="shareFinalSquad()">
+                📤 Δημιουργία & Share στο Viber
+            </button>
+            <button class="btn btn-secondary" style="width: 100%;" onclick="document.getElementById('squadModal').style.display='none'">
+                Ακύρωση
+            </button>
+        </div>
+    </div>
+</div>
+<!-- PIN Modal -->
+<div id="pinModal" class="modal" style="z-index: 4000;">
+    <div class="modal-content" style="max-width: 350px; text-align: center;">
+        <h3 style="color: var(--primary-color); margin-bottom: 1rem;">
+            🔐 Εισαγωγή PIN
+        </h3>
+        <p style="font-size: 0.9rem; color: #666; margin-bottom: 1.5rem;">
+            Για να κάνεις share την αποστολή, εισήγαγε το PIN:
+        </p>
+        
+        <!-- PIN Display -->
+        <div id="pinDisplay" style="display: flex; justify-content: center; gap: 10px; margin-bottom: 2rem;">
+            <div class="pin-dot"></div>
+            <div class="pin-dot"></div>
+            <div class="pin-dot"></div>
+            <div class="pin-dot"></div>
+        </div>
+        
+        <!-- Numeric Keypad -->
+        <div id="pinKeypad" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 250px; margin: 0 auto 1rem;">
+            <button class="pin-btn" onclick="enterPin('1')">1</button>
+            <button class="pin-btn" onclick="enterPin('2')">2</button>
+            <button class="pin-btn" onclick="enterPin('3')">3</button>
+            <button class="pin-btn" onclick="enterPin('4')">4</button>
+            <button class="pin-btn" onclick="enterPin('5')">5</button>
+            <button class="pin-btn" onclick="enterPin('6')">6</button>
+            <button class="pin-btn" onclick="enterPin('7')">7</button>
+            <button class="pin-btn" onclick="enterPin('8')">8</button>
+            <button class="pin-btn" onclick="enterPin('9')">9</button>
+            <button class="pin-btn" onclick="clearPin()" style="background: #ff5252; color: white;">✖</button>
+            <button class="pin-btn" onclick="enterPin('0')">0</button>
+            <button class="pin-btn" onclick="deleteLastPin()" style="background: #ffa726; color: white;">⌫</button>
+        </div>
+        
+        <div id="pinError" style="color: #d32f2f; font-size: 0.85rem; margin-bottom: 1rem; min-height: 20px; font-weight: bold;"></div>
+        
+        <button class="btn btn-secondary" style="width: 100%;" onclick="closePinModal()">
+            Ακύρωση
+        </button>
+    </div>
+</div>
+    <script src="js/main.js"></script>
+<button id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})"><i class="fa-solid fa-chevron-up"></i></button>
+<div id="toast-container"></div>
+</body>
+</html>

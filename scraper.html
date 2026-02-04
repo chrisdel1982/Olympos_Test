@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EPSM Scraper</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; max-width: 900px; margin: 2rem auto; padding: 0 1rem; background: #f4f4f4; }
+        h1 { color: #1a472a; border-bottom: 3px solid #ffd700; }
+        textarea.input-area { width: 100%; height: 150px; font-family: monospace; padding: 10px; border: 2px solid #ccc; border-radius: 5px; }
+        button { padding: 12px 25px; background: #1a472a; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 1.1rem; width: 100%; margin-top: 10px; }
+        button:hover { background: #2d5a3d; }
+        .step { background: white; padding: 1.5rem; border-radius: 8px; margin-top: 2rem; display: none; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .step textarea { width: 100%; height: 200px; margin-top: 10px; background: #fafafa; border: 1px solid #ddd; font-size: 0.9rem; }
+        .error { color: #d32f2f; background: #ffebee; padding: 1rem; margin-top: 1rem; display: none; font-weight: bold; border-radius: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>🤖 EPSM Scraper </h1>
+    <div class="instruction">
+        <strong>Πώς να το κάνεις:</strong>
+        <ol>
+            <li>Πήγαινε στη σελίδα της ΕΠΣΜ με το πρόγραμμα.</li>
+            <li>Κάνε δεξί κλικ κάπου κενά στη σελίδα και πάτα <strong>"Προβολή κώδικα σελίδας"</strong> (View Page Source).</li>
+            <li>Θα ανοίξει μια καρτέλα με κώδικα. Πάτα <strong>Ctrl + A</strong> (Επιλογή όλων) και μετά <strong>Ctrl + C</strong> (Αντιγραφή).</li>
+            <li>Έλα εδώ και κάνε <strong>Επικόλληση (Ctrl + V)</strong> στο κουτί από κάτω.</li>
+            <li>Πάτα το κουμπί <strong>"Ανάλυση Κώδικα"</strong>.</li>
+        </ol>
+    </div>
+
+    <textarea id="htmlInput" class="input-area" placeholder="Επικόλληση κώδικα..."></textarea>
+    <button onclick="parseHTML()">🚀 Εύρεση Ομάδων</button>
+
+    <div id="error" class="error"></div>
+
+    <div id="resultStep" class="step">
+        <h3>✅ Αποτελέσματα</h3>
+        
+        <p><strong>1. Ομάδες (Αλφαβητικά):</strong></p>
+        <textarea id="teamsOutput"></textarea>
+        
+        <p><strong>2. Πρόγραμμα (JSON):</strong></p>
+        <textarea id="jsonOutput"></textarea>
+    </div>
+
+    <script>
+        function parseHTML() {
+            let rawHTML = document.getElementById('htmlInput').value;
+            const errorDiv = document.getElementById('error');
+            const resultStep = document.getElementById('resultStep');
+
+            errorDiv.style.display = 'none';
+            resultStep.style.display = 'none';
+
+            if (!rawHTML.trim()) {
+                showError("Το κουτί είναι άδειο!");
+                return;
+            }
+
+            try {
+                // 1. Καθαρισμός: Διαγραφή script/style
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(rawHTML, 'text/html');
+                doc.querySelectorAll('script, style, link, meta, head, header, footer, nav').forEach(el => el.remove());
+                
+                // 2. Μετατροπή <br> σε αλλαγή γραμμής (ΚΡΙΣΙΜΟ για την ΕΠΣΜ)
+                let cleanText = doc.body ? doc.body.innerHTML : rawHTML;
+                cleanText = cleanText.replace(/<br\s*\/?>/gi, '\n').replace(/<\/tr>/gi, '\n');
+                
+                const tempDiv = document.createElement("div");
+                tempDiv.innerHTML = cleanText;
+                let textContent = tempDiv.textContent || tempDiv.innerText || "";
+
+                // 3. Ανάλυση Γραμμή-Γραμμή
+                const lines = textContent.split('\n');
+                const fixtures = [];
+                const allTeams = new Set();
+                
+                let currentRound = 0;
+                let currentMatches = [];
+                let isReadingMatches = false; // "Διακόπτης" που ανοίγει μόνο όταν βρούμε Αγωνιστική
+
+                lines.forEach(line => {
+                    let text = line.trim();
+                    if (!text) return;
+
+                    // --- Α. Εντοπισμός Αγωνιστικής ---
+                    if (text.includes('ΑΓΩΝΙΣΤΙΚΗ')) {
+                        // Αν είχαμε προηγούμενη αγωνιστική, την αποθηκεύουμε
+                        if (currentRound > 0 && currentMatches.length > 0) {
+                            fixtures.push({ round: currentRound, matches: [...currentMatches] });
+                        }
+
+                        const matchRound = text.match(/(\d+)η/);
+                        if (matchRound) {
+                            currentRound = parseInt(matchRound[1]);
+                            isReadingMatches = true; // Ξεκινάμε να διαβάζουμε ματς
+                            currentMatches = [];
+                            return; 
+                        }
+                    }
+
+                    // --- Β. Ανάγνωση Αγώνα (Μόνο αν ο διακόπτης είναι ανοιχτός) ---
+                    if (isReadingMatches) {
+                        // Αν η γραμμή δεν έχει παύλα "-" ή είναι πολύ μικρή, μάλλον τελείωσαν τα ματς της αγωνιστικής
+                        // ή είναι σκουπίδι ανάμεσα στα ματς.
+                        if (!text.includes('-') || text.length < 5) {
+                            // Δεν κλείνουμε τον διακόπτη αμέσως, γιατί μπορεί να είναι κενή γραμμή.
+                            // Αλλά δεν το επεξεργαζόμαστε ως ματς.
+                            return; 
+                        }
+
+                        // Ανάλυση ΟΜΑΔΑ Α - ΟΜΑΔΑ Β
+                        const dashIndex = text.indexOf('-');
+                        
+                        let part1 = text.substring(0, dashIndex).trim();
+                        let part2 = text.substring(dashIndex + 1).trim();
+
+                        // Έλεγχος εγκυρότητας ονομάτων
+                        if (part1.length < 2 || part2.length < 2) return;
+                        if (part1 === 'ΓΗΠΕΔΟΥΧΟΣ' || part1.includes('Σωματείο')) return;
+                        
+                        // Αγνοούμε τα ΡΕΠΟ (ή τα κρατάμε αν θες, εδώ τα αγνοούμε για να μη μπουν στις Ομάδες)
+                        if (part1.includes('ΡΕΠΟ') || part2.includes('ΡΕΠΟ')) return;
+
+                        // Εύρεση Σκορ (αν υπάρχει στο τέλος της 2ης ομάδας)
+                        let home = part1;
+                        let away = part2;
+                        let hScore = null, aScore = null;
+
+                        // Ψάχνουμε μοτίβο " 2 - 1" στο τέλος
+                        const scoreMatch = part2.match(/(\d+)\s*-\s*(\d+)$/);
+                        if (scoreMatch) {
+                            hScore = parseInt(scoreMatch[1]);
+                            aScore = parseInt(scoreMatch[2]);
+                            away = part2.replace(scoreMatch[0], '').trim();
+                        } else {
+                            // Καθαρισμός αν έχει παύλα στο τέλος
+                            away = part2.replace(/-$/, '').trim();
+                        }
+
+                        // Τελικός Έλεγχος: Αν τα ονόματα μοιάζουν με πραγματικές ομάδες
+                        // Αποκλείουμε "Νέα", "Ρεπορτάζ" που τυχόν γλίστρησαν
+                        const garbage = ['Νέα', 'Ρεπορτάζ', 'Κ14', 'Κ15', 'ΔΥΤΙΚΟΣ', 'ΑΝΑΤΟΛΙΚΟΣ'];
+                        if (garbage.some(g => home.includes(g) || away.includes(g))) return;
+
+                        // Προσθήκη
+                        allTeams.add(home);
+                        allTeams.add(away);
+                        currentMatches.push({ home, away, homeScore: hScore, awayScore: aScore });
+                    }
+                });
+
+                // Προσθήκη τελευταίας αγωνιστικής
+                if (currentRound > 0 && currentMatches.length > 0) {
+                    fixtures.push({ round: currentRound, matches: [...currentMatches] });
+                }
+
+                if (fixtures.length === 0) throw new Error("Δεν βρέθηκαν αγώνες. Βεβαιώσου ότι ο κώδικας περιέχει τη λέξη 'ΑΓΩΝΙΣΤΙΚΗ'.");
+
+                // --- Output ---
+                const sortedTeams = Array.from(allTeams).sort();
+                let teamsJs = "const TEAMS = [\n";
+                sortedTeams.forEach(t => teamsJs += `    '${t}',\n`);
+                teamsJs += "];";
+                document.getElementById('teamsOutput').value = teamsJs;
+
+                const jsonOutput = JSON.stringify(fixtures, null, 2);
+                document.getElementById('jsonOutput').value = `"fixtures": ${jsonOutput}`;
+
+                resultStep.style.display = 'block';
+
+            } catch (err) {
+                showError(err.message);
+            }
+        }
+
+        function showError(msg) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.innerText = "❌ " + msg;
+            errorDiv.style.display = 'block';
+        }
+    </script>
+
+</body>
+</html>
