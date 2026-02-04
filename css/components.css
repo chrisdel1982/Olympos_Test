@@ -1,19 +1,3 @@
-    <style>
-        /* --- TOAST NOTIFICATIONS (Native Style) --- */
-#toast-container {
-    position: fixed;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 10000; /* Πάνω από όλα, ακόμα και από τα Modals */
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    pointer-events: none; /* Για να μην εμποδίζει τα κλικ από πίσω */
-    width: max-content;
-    max-width: 90%;
-}
-
 .toast {
     background: rgba(30, 30, 30, 0.95); /* Σκούρο γκρι, σχεδόν μαύρο */
     color: white;
@@ -46,145 +30,6 @@
     background: #ff0046; color: white; padding: 2px 8px; border-radius: 4px; 
     font-weight: bold; font-size: 0.8rem; animation: live-pulse 1.5s infinite; margin-bottom: 5px; 
 }
-/* Στυλ για το σηματάκι NEW */
-.notification-badge {
-    background-color: #ff0046; /* Το έντονο κόκκινο */
-    color: white;
-    font-size: 0.65rem;
-    padding: 2px 6px;
-    border-radius: 4px;
-    margin-left: 5px;
-    font-weight: 900;
-    vertical-align: middle;
-    display: none; /* Κρυφό από προεπιλογή */
-    animation: pulse-badge 2s infinite; /* Να αναβοσβήνει για να τραβάει την προσοχή */
-}
-@keyframes live-pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
-.live-score-display { 
-    font-size: 2.8rem; font-weight: 900; color: var(--primary-color); line-height: 1; margin: 10px 0; 
-}
-@media (prefers-color-scheme: dark) { .live-score-display { color: #fff !important; } }
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary-color: #1a472a;
-            --secondary-color: #2d5a3d;
-            --accent-color: #ffd700;
-            --text-light: #ffffff;
-            --text-dark: #333333;
-            --fluo-color: #ccff00e9;
-            --bg-light: #f4f4f4;
-            --shadow: rgba(0, 0, 0, 0.2);
-            --accent-dark: #d4af37; /* Πιο σκούρο χρυσό για contrast */
-        }
-
-        body {
-    font-family: 'Inter', sans-serif; 
-    line-height: 1.6;
-    color: var(--text-dark);
-    background: var(--bg-light);
-}
-h1, h2, h3, .card-header h2, nav {
-    font-family: 'Roboto Condensed', sans-serif; /* Condensed μόνο εδώ */
-}
-
-        header {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: var(--text-light);
-            box-shadow: 0 4px 10px var(--shadow);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .header-top {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 1.5rem 2rem;
-            gap: 20px;
-        }
-
-        .logo {
-            width: 80px;
-            height: 80px;
-            background: white;
-            border-radius: 50%;
-            border: 4px solid var(--accent-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        .logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        .club-info {
-            text-align: center;
-        }
-
-        .club-info h1 {
-            font-size: 2rem;
-            margin-bottom: 0.3rem;
-        }
-
-        .club-info p {
-            font-size: 0.9rem;
-            opacity: 0.9;
-        }
-
-        nav {
-            background: rgba(0, 0, 0, 0.2);
-        }
-
-        nav ul {
-            list-style: none;
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        nav ul li a {
-            display: block;
-            color: var(--text-light);
-            text-decoration: none;
-            padding: 1rem 2rem;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        nav ul li a:hover,
-        nav ul li a.active {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-        }
-
-        .page {
-            display: none;
-        }
-
-        .page.active {
-            display: block;
-            animation: fadeIn 0.4s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
 
         .card {
             background: white;
@@ -194,31 +39,10 @@ h1, h2, h3, .card-header h2, nav {
             box-shadow: 0 3px 10px var(--shadow);
         }
 
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 3px solid var(--accent-color);
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
         .card h2 {
             color: var(--primary-color);
             margin: 0;
         }
-    .player-age {
-    font-size: 0.85rem;
-    color: #666;
-    font-weight: 500;    
-    /* ΤΟ ΚΟΛΠΟ ΓΙΑ ΝΑ ΠΑΕΙ ΤΕΡΜΑ ΚΑΤΩ: */
-    margin-top: auto !important; /* Σπρώχνει το στοιχείο στο τέλος της κάρτας */
-        /* Λίγο "αέρα" από τον πάτο της κάρτας για να μην ακουμπάει */
-    padding-bottom: 5px; 
-    width: 100%;
-}
 
 .table-wrapper {
     overflow-x: auto;
@@ -306,6 +130,7 @@ table thead th:nth-child(1),
 table thead th:nth-child(2) {
     z-index: 30;
 }
+
 /* --- ΧΡΩΜΑΤΙΣΤΕΣ ΜΠΑΡΕΣ (INDICATORS - FLOATING STYLE) --- */
 /* Το κελί της θέσης χρειάζεται relative για να τοποθετηθεί η μπάρα μέσα του */
 .pos-cell {
@@ -366,6 +191,7 @@ table thead th:nth-child(2) {
 
     table { min-width: 100%; }
 }
+
 /* --- Match Display (New Grouped Style) --- */
 .round-section {
     margin-bottom: 2rem;
@@ -374,18 +200,6 @@ table thead th:nth-child(2) {
     overflow: hidden;
     background: white;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-}
-
-.round-header {
-    background: #f8f8f8;
-    padding: 0.8rem 1rem;
-    font-weight: 700;
-    color: var(--primary-color);
-    border-bottom: 1px solid #e5e5e5;
-    font-size: 1rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
 }
 
 .match-row {
@@ -454,12 +268,6 @@ table thead th:nth-child(2) {
 }
 
 /* DARK MODE FIX ΓΙΑ ΑΝΑΒΟΛΗ */
-@media (prefers-color-scheme: dark) {
-    .postponed-badge {
-        background: #3e2723 !important; /* Πολύ σκούρο κόκκινο φόντο */
-        color: #ff8a80 !important;      /* Ανοιχτό κόκκινο γράμμα */
-        border-color: #d32f2f !important;
-    }
 }
 
 @media (max-width: 768px) {
@@ -468,10 +276,10 @@ table thead th:nth-child(2) {
         text-align: center;
         gap: 0.5rem;
     }
+
     .team-left, .team-right {
         text-align: center;
     }
-}
 
       /* --- ΝΕΟ ΣΤΥΛ ΚΑΡΤΑΣ ΠΑΙΚΤΗ (FIFA STYLE) --- */
 
@@ -481,18 +289,6 @@ table thead th:nth-child(2) {
     gap: 1rem;
     margin-top: 2rem;
     padding: 0.5rem;
-}
-
-.player-card {
-    background: white;
-    border-radius: 12px;
-    padding: 1rem 0.8rem;
-    text-align: center;
-    position: relative;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    transition: all 0.3s ease;
-    border: 2px solid transparent;
-    overflow: visible;
 }
 
         /* Η χρυσή μπάρα στο πάνω μέρος της κάρτας */
@@ -506,6 +302,7 @@ table thead th:nth-child(2) {
     background: var(--primary-color);
     z-index: 2;
 }
+
 /* --- ΝΕΟ ΣΤΥΛ ΚΑΡΤΑΣ ΠΑΙΚΤΗ (FIFA STYLE - CLEAN) --- */
 .roster-grid {
     display: grid;
@@ -513,20 +310,6 @@ table thead th:nth-child(2) {
     gap: 1rem;
     margin-top: 2rem;
     padding: 0.5rem;
-}
-
-.player-card {
-    background: white;
-    border-radius: 12px;
-    padding: 1rem 0.8rem;
-    text-align: center;
-    position: relative;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    transition: all 0.3s ease;
-    border: 2px solid transparent; /* Αόρατο περίγραμμα αρχικά */
-    
-    /* ΣΗΜΑΝΤΙΚΟ: Κόβει οτιδήποτε εξέχει από τις γωνίες */
-    overflow: hidden; 
 }
 
 /* Η πράσινη μπάρα στο πάνω μέρος (ΜΕΙΩΜΕΝΗ & ΚΕΝΤΡΑΡΙΣΜΕΝΗ) */
@@ -690,30 +473,6 @@ table thead th:nth-child(2) {
     background: transparent !important;
 }
 
-.coach-photo-bg::before {
-    background-color: #117f0dd8 !important; 
-    background-image: none !important;
-}
-
-
-.coach-photo-bg .jersey-team-name {
-    display: none;
-}
-
-.coach-photo-bg .player-number {
-    font-family: 'Roboto Condensed', sans-serif !important; /* Όχι Impact */
-    font-size: 1.0rem !important; /* ΜΙΚΡΑ ΓΡΑΜΜΑΤΑ */
-    font-weight: 700 !important;
-    color: #000000 !important;
-    transform: none !important; /* Όχι τέντωμα */
-    letter-spacing: 1px !important;
-    
-    /* Τοποθέτηση ψηλά */
-    margin-top: 10px !important; 
-    margin-bottom: auto !important;
-    text-shadow: none !important;
-}
-
 /* Θέση Παίκτη */
 .player-position {
     color: var(--primary-color);
@@ -730,7 +489,6 @@ table thead th:nth-child(2) {
     margin-top: 15px !important; /* Αέρας από το όνομα */
     margin-bottom: 5px;
 }
-    
 
         .player-actions {
             margin-top: 1.5rem;
@@ -761,7 +519,6 @@ table thead th:nth-child(2) {
     cursor: pointer;
 }
 
-.news-item.collapsed .news-content,
 .news-item.collapsed .news-image {
     display: none;
 }
@@ -776,20 +533,10 @@ table thead th:nth-child(2) {
 .news-item.collapsed .news-toggle {
     transform: rotate(-90deg);
 }
-        
 
         .news-item:hover {
             transform: translateX(5px);
             box-shadow: 0 3px 10px var(--shadow);
-        }
-
-        .news-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-            flex-wrap: wrap;
-            gap: 0.5rem;
         }
 
         .news-title {
@@ -812,6 +559,7 @@ table thead th:nth-child(2) {
             line-height: 1.8;
             white-space: pre-wrap;
         }
+
 .news-image {
     width: 100%;
     max-height: 400px;
@@ -820,6 +568,7 @@ table thead th:nth-child(2) {
     margin-top: 1rem;
     border: 2px solid #ddd;
 }
+
         .no-news {
             text-align: center;
             padding: 3rem;
@@ -959,7 +708,6 @@ table thead th:nth-child(2) {
             color: var(--text-dark);
         }
 
-        .form-group input,
         .form-group select {
             width: 100%;
             padding: 0.8rem;
@@ -969,7 +717,6 @@ table thead th:nth-child(2) {
             transition: border 0.3s ease;
         }
 
-        .form-group input:focus,
         .form-group select:focus {
             outline: none;
             border-color: var(--primary-color);
@@ -1082,7 +829,6 @@ table thead th:nth-child(2) {
                 text-align: center !important;
                 display: flex !important;
             }
-        }
 
         .empty-state {
             text-align: center;
@@ -1111,6 +857,7 @@ table thead th:nth-child(2) {
         .roster-item:hover {
             background: #f0f0f0;
         }
+
 /* --- Announcement Ticker Styles (NEO) --- */
         #announcement-ticker {
             background: var(--accent-color);
@@ -1136,35 +883,21 @@ table thead th:nth-child(2) {
             0% { transform: translateX(0); }
             100% { transform: translateX(-100%); }
         }
+
         /* --- End Ticker Styles --- */
         @media print {
             body {
                 background: white;
             }
 
-            header nav,
-            .action-buttons,
-            #results,
-            #fixtures,
-            #roster, 
             #announcement-ticker{
                 display: none !important;
-            }
-
-            .container {
-                max-width: 100%;
-                margin: 0;
-                padding: 0;
             }
 
             .card {
                 box-shadow: none;
                 padding: 1rem;
                 page-break-inside: avoid;
-            }
-
-            .card-header {
-                border-bottom: 2px solid #000;
             }
 
             table {
@@ -1189,65 +922,21 @@ table thead th:nth-child(2) {
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
             }
-        }
 
         @media (max-width: 768px) {
             body {
                 font-size: 14px;
             }
+
         #announcement-ticker {
                 font-size: 0.8rem;
                 padding: 0.5rem 0;
-            }
-            .header-top {
-                flex-direction: column;
-                padding: 1rem;
-                gap: 10px;
-            }
-
-            .logo {
-                width: 60px;
-                height: 60px;
-                border: 3px solid var(--accent-color);
-            }
-
-            .club-info h1 {
-                font-size: 1.4rem;
-                line-height: 1.2;
-                margin-bottom: 0.2rem;
-            }
-
-            .club-info p {
-                font-size: 0.8rem;
-            }
-
-            nav ul {
-                flex-direction: row;
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-                justify-content: flex-start;
-                gap: 0;
-            }
-
-            nav ul li {
-                flex-shrink: 0;
-            }
-
-            nav ul li a {
-                padding: 0.8rem 1.2rem;
-                font-size: 0.9rem;
-                white-space: nowrap;
             }
 
             .admin-link {
                 font-size: 1rem !important;
                 padding: 0.8rem 1rem !important;
                 opacity: 0.7;
-            }
-
-            .container {
-                padding: 0 0.5rem;
-                margin: 1rem auto;
             }
 
             .card {
@@ -1261,19 +950,6 @@ table thead th:nth-child(2) {
             #results .card,
             #fixtures .card {
                 padding: 1rem 0;
-            }
-
-            #standings .card-header,
-            #results .card-header,
-            #fixtures .card-header {
-                padding: 0 0.5rem;
-                position: relative;
-            }
-
-            .card-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.5rem;
             }
 
             .card h2 {
@@ -1327,7 +1003,6 @@ table thead th:nth-child(2) {
                 margin: 0.8rem 0;
             }
 
-            .team-left,
             .team-right {
                 text-align: center;
                 font-size: 0.9rem;
@@ -1375,8 +1050,6 @@ table thead th:nth-child(2) {
                 margin-bottom: 0.3rem;
             }
 
-            .form-group input,
-            .form-group select,
             .form-group textarea {
                 font-size: 0.9rem;
                 padding: 0.6rem;
@@ -1404,7 +1077,6 @@ table thead th:nth-child(2) {
                 gap: 0.5rem;
             }
 
-            .action-buttons .btn,
             .modal-buttons .btn {
                 width: 100%;
                 justify-content: center;
@@ -1417,35 +1089,14 @@ table thead th:nth-child(2) {
         gap: 0.75rem;
     }
 
-    .player-card {
-        padding: 0.8rem;
-    }
-
     .player-photo {
         width: 90px;
         height: 110px;
         padding-top: 20px;
     }
-    
+
     .player-number {
         font-size: 2rem;
-    }
-}
-
-    .player-name {
-        font-size: 0.95rem;
-        /* ΤΟ ΚΟΛΠΟ ΓΙΑ ΤΙΣ 2 ΓΡΑΜΜΕΣ: */
-    white-space: normal !important; /* Επιτρέπει αλλαγή γραμμής */
-    word-spacing: 999px;            /* Αναγκάζει κάθε λέξη να πάει σε νέα γραμμή! */
-    line-height: 1.2;               /* Σωστό κενό ανάμεσα στις γραμμές */
-    
-    /* ΚΛΕΙΔΩΜΑ ΥΨΟΥΣ (Για να είναι όλες οι κάρτες ίσες) */
-    min-height: 2.4em;              /* Πιάνει χώρο για 2 γραμμές ούτως ή άλλως */
-    display: flex;
-    align-items: center;            /* Κεντράρισμα κάθετα */
-    justify-content: center;        /* Κεντράρισμα οριζόντια */
-    text-align: center;
-    z-index: 10;
     }
 
    .player-position {
@@ -1454,6 +1105,7 @@ table thead th:nth-child(2) {
         line-height: 1.1 !important; /* Πιο κοντά οι γραμμές αν σπάει σε 2η σειρά */
         margin-top: 2px;
     }
+
 /* --- MOBILE FIXES ΓΙΑ ΤΗ ΦΑΝΕΛΑ & BADGE --- */
     
     /* 1. Προσαρμογή του σήματος Αρχηγού για μικρή φανέλα */
@@ -1484,23 +1136,18 @@ table thead th:nth-child(2) {
         height: 90px !important;
         padding-top: 5px !important;
     }
-    
+
     /* Διόρθωση γιακά στα κινητά */
     .player-photo::after {
         width: 35px !important;
         height: 8px !important;
     }
+
             /* Νέα - Ειδήσεις mobile styling */
             .news-item {
                 padding: 1rem;
                 margin-bottom: 1rem;
                 border-left: 4px solid var(--primary-color);
-            }
-
-            .news-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.3rem;
             }
 
             .news-title {
@@ -1571,14 +1218,6 @@ table thead th:nth-child(2) {
                 height: 4px;
             }
 
-            nav ul::-webkit-scrollbar-track {
-                background: transparent;
-            }
-
-            nav ul::-webkit-scrollbar-thumb {
-                background: var(--accent-color);
-                border-radius: 2px;
-            }
               /* Next Match mobile fixes */
     .nm-header {
         flex-direction: column !important;
@@ -1586,11 +1225,11 @@ table thead th:nth-child(2) {
         padding: 0.8rem 0.5rem !important;
         text-align: center;
     }
-    
+
     .nm-header span {
         font-size: 0.8rem !important;
     }
-    
+
     /* Ο τίτλος του αγώνα να μπορεί να σπάει σε 2 γραμμές */
     .nm-header span:nth-child(2) {
         font-size: clamp(0.7rem, 3.5vw, 0.9rem) !important;
@@ -1599,36 +1238,17 @@ table thead th:nth-child(2) {
         max-width: 90%;
         margin: 0 auto;
     }
-    
-    .nm-body { 
-        flex-direction: column; 
-        gap: 0.5rem; 
-        padding: 1.5rem 1rem !important;
-    }
-    
+
     .nm-team { 
         text-align: center !important; 
         font-size: 1.2rem !important; 
     }
-        }
 
         /* Extra small devices (phones < 375px) */
         @media (max-width: 375px) {
 	#announcement-ticker {
                 font-size: 0.75rem;
             }            
-	.club-info h1 {
-                font-size: 1.1rem;
-            }
-
-            .club-info p {
-                font-size: 0.7rem;
-            }
-
-            nav ul li a {
-                padding: 0.8rem 1rem;
-                font-size: 0.85rem;
-            }
 
             table {
                 font-size: 0.7rem;
@@ -1651,8 +1271,7 @@ table thead th:nth-child(2) {
                 height: 40px;
                 font-size: 1rem;
             }
-        }
-        
+
         /* --- Mobile Fix για Φόρμα --- */
 @media (max-width: 768px) {
     .form-container {
@@ -1665,7 +1284,7 @@ table thead th:nth-child(2) {
         height: 18px;
         font-size: 0.6rem; /* Μικρότερα γράμματα */
     }
-}
+
 /* Νέο στυλ για τους τίτλους των θέσεων στο Ρόστερ */
 .roster-category-title {
     width: 100%;
@@ -1684,6 +1303,7 @@ table thead th:nth-child(2) {
 #rosterContainer {
     display: block !important; /* Σημαντικό για να σπάσει το παλιό grid */
 }
+
 /* --- TOP SCORERS STYLES (FINAL - BALL BADGE) --- */
 .scorers-list {
     width: 100%;
@@ -1696,15 +1316,6 @@ table thead th:nth-child(2) {
     align-items: center;
     padding: 0.8rem 0.5rem;
     border-bottom: 1px solid #f0f0f0;
-}
-
-.scorer-header {
-    background: #f9f9f9;
-    font-size: 0.85rem;
-    color: #888;
-    font-weight: 600;
-    text-transform: uppercase;
-    padding: 0.6rem 0.5rem;
 }
 
 /* 1η Στήλη: Θέση (#) */
@@ -1757,6 +1368,7 @@ table thead th:nth-child(2) {
     justify-content: center;
     margin: 0 auto;
     }
+
     /* --- ΔΙΟΡΘΩΣΗ ΓΙΑ ΤΟ ΚΟΥΤΑΚΙ ΤΩΝ ΓΚΟΛ (ADMIN) --- */
 .goal-control {
     display: flex !important;
@@ -1803,6 +1415,7 @@ table thead th:nth-child(2) {
     margin: 0 !important;
     border-radius: 0 !important;
 }
+
 /* --- LA LIGA STYLE BANNER (FINAL FIX) --- */
 .next-match-card {
     background: #ffffff;
@@ -1815,6 +1428,7 @@ table thead th:nth-child(2) {
     display: flex;
     flex-direction: column;
 }
+
 /* ΚΕΝΤΡΟ: Ομάδες */
 .nm-body {
     padding: 2rem 1rem 1rem;
@@ -1874,6 +1488,7 @@ table thead th:nth-child(2) {
     .nm-body { flex-direction: column; gap: 0.5rem; }
     .nm-team { text-align: center !important; font-size: 1.3rem; }
 }
+
 /* --- MOBILE MENU STYLES --- */
 
 /* Το κουμπί Hamburger (αρχικά κρυμμένο στα PC) */
@@ -1941,7 +1556,7 @@ table thead th:nth-child(2) {
                 text-align: left;
                 margin: 0; 
             }
-            
+
             .nav-link {
                 padding: 10px 0; /* Μικρότερα κενά πάνω-κάτω */
                 font-size: 1.2rem; /* ΑΛΛΑΓΗ: Πιο μικρά γράμματα (ήταν 1.5rem) */
@@ -1964,12 +1579,13 @@ table thead th:nth-child(2) {
             .hamburger.active .bar:nth-child(1) { transform: translateY(8px) rotate(45deg); }
             .hamburger.active .bar:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
         }
+
         /* --- ΤΕΛΙΚΗ ΔΙΟΡΘΩΣΗ ΓΙΑ ΤΟ ΜΕΝΟΥ (ΜΟΝΟ ΚΙΤΡΙΝΑ ΓΡΑΜΜΑΤΑ) --- */
 @media (max-width: 768px) {
     .nav-link:hover, .nav-link.active {
         background: transparent !important; /* Όχι φόντο */
     }
-}
+
 /* --- CLEANEST MENU (Χωρίς καμία γραμμή) --- */
 @media (max-width: 768px) {
     /* Αφαιρεί τη γραμμή από όλα τα λινκ */
@@ -1982,7 +1598,7 @@ table thead th:nth-child(2) {
         border-bottom: none !important;
         background: transparent !important;
     }
-}
+
 /* --- NEXT MATCH HEADER LAYOUT FIX (FINAL CORRECTED) --- */
 .nm-header {
     display: grid !important;
@@ -2034,7 +1650,6 @@ table thead th:nth-child(2) {
         gap: 5px !important;
     }
 
-    .nm-header span:nth-child(1),
     .nm-header span:nth-child(3) {
         font-size: 0.75rem !important; /* Πιο μικρά για να χωράνε */
     }
@@ -2045,18 +1660,13 @@ table thead th:nth-child(2) {
         max-width: 160px; /* Περιορισμός για να μην καβαλάει τα άκρα */
         white-space: normal !important; /* Επιτρέπουμε αλλαγή γραμμής */
     }
-}
 
 /* --- ΧΡΩΜΑΤΑ ΓΙΑ ΕΜΒΟΛΙΜΟ (LIGHT MODE) --- */
 .nm-header.special-match {
     color: #000000 !important; /* Μαύρα γράμματα στο κίτρινο */
 }
+
 /* --- DARK MODE FIXES (FINAL V3.1 - GOLD EDITION) --- */
-@media (prefers-color-scheme: dark) {
-    :root {
-        --bg-light: #121212;
-        --text-dark: #e0e0e0;
-    }
 
     body {
         background-color: #121212;
@@ -2069,7 +1679,7 @@ table thead th:nth-child(2) {
         color: #e0e0e0 !important;
         border-color: #333 !important;
     }
-    
+
     /* Τίτλοι */
     h1, h2, h3, .card h2, .news-title {
         color: #ffffff !important;
@@ -2081,6 +1691,7 @@ table thead th:nth-child(2) {
         color: #e0e0e0 !important;
         border-color: #444 !important;
     }
+
     .news-date { color: #aaa !important; }
     .news-content { color: #ddd !important; }
 
@@ -2090,6 +1701,7 @@ table thead th:nth-child(2) {
         color: #fff !important;
         border-bottom: 1px solid #444 !important;
     }
+
     .nm-team { color: #ffffff !important; }
     .nm-team.my-team { color: #4caf50 !important; } /* Φωτεινό πράσινο */
     .nm-vs, .nm-stadium { color: #aaa !important; }
@@ -2117,7 +1729,7 @@ table thead th:nth-child(2) {
         border-right: 1px solid #333; 
         box-shadow: none !important; 
     }
-    table th:nth-child(1),
+
     table th:nth-child(2) {
         background-color: #333 !important;
         border-right: 1px solid #444;
@@ -2131,6 +1743,7 @@ table thead th:nth-child(2) {
         color: #ffffff !important; 
         border-bottom: 1px solid #333; 
     }
+
     #announcement-text { color: #ffffff !important; }
 
     /* Φανέλες */
@@ -2163,17 +1776,12 @@ table thead th:nth-child(2) {
     .match-scorer-entry {
         color: #e0e0e0 !important;
     }
-    
+
     .match-cs-entry {
         color: #81c784 !important;
         font-weight: bold;
     }
-    .nm-header {
-        background-color: #2a2a2a !important;
-        color: #e0e0e0 !important;
-        border-bottom: 1px solid #444 !important;
-    }
-    
+
     /* --- DARK MODE SPECIAL MATCH FIX --- */
     /* Σκούρο Χρυσό φόντο με ΑΣΠΡΑ γράμματα για αντίθεση */
     .nm-header.special-match {
@@ -2181,11 +1789,12 @@ table thead th:nth-child(2) {
         color: #ffffff !important;             /* Άσπρα γράμματα */
         border-bottom: 1px solid #8B4513 !important;
     }
-    
+
     .nm-team { color: #ffffff !important; }
     .nm-team.my-team { color: #81c784 !important; }
     .nm-vs, .nm-stadium { color: #aaa !important; }
 }
+
 /* --- SHARE MODAL STYLES --- */
 .share-modal {
     display: none;
@@ -2256,9 +1865,8 @@ table thead th:nth-child(2) {
 }
 
 /* DARK MODE fix για το εικονίδιο αντιγραφής */
-@media (prefers-color-scheme: dark) {
-    .fa-copy { color: #e0e0e0; }
 }
+
 .share-text { font-weight: 600; font-size: 0.9rem; color: #333; }
 
 /* Κουμπί Share μέσα στην είδηση */
@@ -2277,12 +1885,11 @@ table thead th:nth-child(2) {
 }
 
 /* Dark Mode υποστήριξη για το Share */
-@media (prefers-color-scheme: dark) {
-    .share-modal-content { background: #252525; border: 1px solid #444; }
     .share-option { background: #333; }
     .share-text { color: #fff; }
     .btn-share { border-color: #ffd700; color: #ffd700; }
 }
+
 /* --- SCORERS STYLES (ΝΕΟ) --- */
 .match-scorers {
     font-size: 0.8rem;
@@ -2295,11 +1902,13 @@ table thead th:nth-child(2) {
     border-top: 1px solid rgba(0,0,0,0.05);
     width: 100%;
 }
+
 .match-scorer-entry {
     display: inline-block;
     margin: 0 6px;
     font-weight: 600;
 }
+
 /* ADMIN TOOLS */
 .admin-scorers-btn {
     margin-top: 5px;
@@ -2311,6 +1920,7 @@ table thead th:nth-child(2) {
     padding: 5px;
     cursor: pointer;
 }
+
 .admin-scorers-panel {
     background: #f1f8e9;
     padding: 10px;
@@ -2319,6 +1929,7 @@ table thead th:nth-child(2) {
     border-radius: 4px;
     display: none;
 }
+
 .scorer-tag {
     background: white;
     border: 1px solid #ccc;
@@ -2330,6 +1941,7 @@ table thead th:nth-child(2) {
     align-items: center;
     margin-bottom: 4px;
 }
+
 /* --- BIGGER ADMIN PANEL --- */
 .modal-content {
     width: 95% !important;        /* Πιάνει σχεδόν όλο το πλάτος */
@@ -2384,6 +1996,7 @@ table thead th:nth-child(2) {
     font-weight: bold;
     background: #f0f0f0;
 }
+
 /* --- COMPACT MOBILE RESULTS V5 (MIRRORED ALIGNMENT - FINAL) --- */
 @media (max-width: 768px) {
     .match-row {
@@ -2441,7 +2054,7 @@ table thead th:nth-child(2) {
         margin-top: 0 !important;
         padding-bottom: 5px !important;
     }
-}
+
 /* --- FIX: ΤΟ ΠΡΟΓΡΑΜΜΑ (FIXTURES) ΝΑ ΕΙΝΑΙ ΙΔΙΟ ΜΕ ΤΑ ΑΠΟΤΕΛΕΣΜΑΤΑ --- */
 @media (max-width: 768px) {
     /* 1. Αναγκάζουμε το κουτί του αγώνα να γίνει 3στηλο πλέγμα */
@@ -2481,7 +2094,7 @@ table thead th:nth-child(2) {
         min-width: 25px;
         height: auto;
     }
-}
+
 /* --- 3D FLIP CARD STYLES (FIXED) --- */
 
 /* 1. Καθαρίζουμε το Wrapper (για να φύγει η διπλή μπάρα) */
@@ -2510,10 +2123,6 @@ table thead th:nth-child(2) {
     transform-style: preserve-3d;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-}
-
-.player-card.flipped .card-inner {
-    transform: rotateY(180deg);
 }
 
 /* 3. Στυλ για ΜΠΡΟΣ και ΠΙΣΩ (FIXED ΓΙΑ ΟΛΑ: MOZILLA, SAFARI, CHROME) */
@@ -2555,6 +2164,7 @@ table thead th:nth-child(2) {
     display: flex;
     flex-direction: column;
 }
+
 .card-back::before {
     content: '';
     position: absolute;
@@ -2571,6 +2181,7 @@ table thead th:nth-child(2) {
     z-index: 1; /* Πάνω από το φόντο */
     pointer-events: none;
 }
+
 /* ΤΕΛΙΚΗ ΣΦΙΧΤΗ ΣΤΟΙΧΙΣΗ */
 .stats-row {
     display: flex;             /* Αλλαγή σε flex για μέγιστη ευελιξία */
@@ -2675,19 +2286,7 @@ table thead th:nth-child(2) {
     text-overflow: ellipsis; /* Αν είναι ΤΕΡΑΣΤΙΟ όνομα, βάζει ... στο τέλος */
 }
 
-.stat-header {
-    background: var(--primary-color);
-    color: white;
-    padding: 4px;
-    border-radius: 4px;
-    margin-bottom: 8px;
-    font-size: 0.85rem; /* Μικρότερος τίτλος */
-    font-weight: bold;
-    text-align: center;
-}
 /* --- DARK MODE FIX ΓΙΑ 3D ΚΑΡΤΕΣ (ΠΡΟΣΘΗΚΗ ΣΤΟ ΤΕΛΟΣ) --- */
-@media (prefers-color-scheme: dark) {
-    .stats-team-name { color: #fff !important; }
     .stats-match-score { color: #aaa !important; }
     /* Βάζουμε σκούρο φόντο στις όψεις της κάρτας */
     .card-front, .card-back {
@@ -2705,26 +2304,24 @@ table thead th:nth-child(2) {
     .player-name { 
         color: #ffffff !important; 
     }
-    .player-age { 
-        color: #aaaaaa !important; 
-    }
-    
+
     /* Λίστα στατιστικών (πίσω μέρος) - Σκούρα γράμματα και γραμμές */
     .stats-list li {
         color: #ffffff !important;
         border-bottom: 1px solid #333 !important;
     }
-    
+
     /* Διόρθωση για τα γκρι headers (π.χ. "ΚΑΝΕΝΑ ΓΚΟΛ") */
     .stat-header[style*="background:#ccc"] {
         background: #444 !important; 
         color: #fff !important;
     }
+
     .goal-number-back {
         color: #ffd700 !important; 
         text-shadow: 0 0 5px rgba(255, 215, 0, 0.3); /* Ελαφριά λάμψη */
     }
-}
+
 #backToTop {
     display: none; /* Κρυφό αρχικά */
     position: fixed;
@@ -2777,23 +2374,16 @@ table thead th:nth-child(2) {
 }
 
 /* Πιο minimal εμφάνιση στο Dark Mode */
-@media (prefers-color-scheme: dark) {
-    #backToTop {
-        background-color: #ffd700;
-        color: #000;
-    }
 }
+
 /* Το εφέ που αναβοσβήνει */
 @keyframes pulse-badge {
     0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 0, 70, 0.7); }
     70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(255, 0, 70, 0); }
     100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 0, 70, 0); }
 }
+
 /* --- DARK MODE FIXES (FINAL V5 - PERFECT BACK CARD) --- */
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --card-back-bg: #1a1a1a;
-            }
 
             body { background-color: #121212; color: #e0e0e0; }
 
@@ -2818,7 +2408,7 @@ table thead th:nth-child(2) {
                 color: #ffffff !important;
                 border-bottom: 1px solid #333 !important;
             }
-            
+
             /* ΟΝΟΜΑ ΠΑΙΚΤΗ ΣΤΗΝ ΠΙΣΩ ΟΨΗ */
             body .card-back h4 {
                 color: #ffffff !important;
@@ -2836,13 +2426,8 @@ table thead th:nth-child(2) {
             #squadList label span { color: #ffffff !important; }
             #squadModal .form-group[style*="background: #fff3e0"] { background-color: #3e2723 !important; }
         }
+
 /* --- ΟΡΙΣΤΙΚΗ ΔΙΟΡΘΩΣΗ ADMIN PANEL (DARK MODE) --- */
-@media (prefers-color-scheme: dark) {
-    /* 1. Γενικό φόντο Modal */
-    #adminModal .modal-content {
-        background-color: #1a1a1a !important;
-        color: #ffffff !important;
-    }
 
     /* 2. Διόρθωση των "ροζ" και "πράσινων" πλαισίων (Live Score, Countdown κτλ) */
     #adminModal .form-group[style*="background"],
@@ -2884,23 +2469,19 @@ table thead th:nth-child(2) {
     #adminModal .form-group input[type="checkbox"] + label {
         color: #ffffff !important;
     }
-}
-@media (prefers-color-scheme: dark) {
-   .match-input-row {
-        background-color: #252525 !important;
-        border: 1px solid #444 !important;
-        box-shadow: none !important;
-    }
+
     .match-input-row input[type="text"][disabled] {
         background-color: #333 !important; /* Σκούρο γκρι */
         color: #eee !important;            /* Άσπρα γράμματα */
         border: 1px solid #555 !important;
     }
+
     .admin-scorers-btn {
         background-color: #37474f !important; /* Σκούρο μπλε/γκρι */
         color: #80cbc4 !important;            /* Ανοιχτό τιρκουάζ γράμμα */
         border-color: #546e7a !important;
     }
+
     .admin-scorers-btn[style*="background:#f1f8e9"] {
         background-color: #1b5e20 !important; /* Σκούρο πράσινο φόντο */
         color: #a5d6a7 !important;            /* Ανοιχτό πράσινο γράμμα */
@@ -2911,24 +2492,27 @@ table thead th:nth-child(2) {
         background-color: #1e1e1e !important;
         border-color: #444 !important;
     }
+
         .admin-scorers-panel div {
         color: #e0e0e0 !important;
     }
+
     .scorer-tag {
         background-color: #333 !important;
         border-color: #555 !important;
         color: #fff !important;
     }
+
     .admin-scorers-panel select {
         background-color: #333 !important;
         color: #fff !important;
         border: 1px solid #555 !important;
     }
+
         .postpone-label {
         color: #ff8a80 !important; /* Ανοιχτό κόκκινο για να διαβάζεται */
     }
-}
-        
+
         /* PIN MODAL STYLES */
         .pin-dot { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--primary-color); background: white; transition: all 0.3s ease; }
         .pin-dot.filled { background: var(--primary-color); transform: scale(1.1); }
@@ -2942,11 +2526,3 @@ table thead th:nth-child(2) {
             width: 100% !important; height: 100% !important; max-width: none !important; border-radius: 0 !important; margin: 0 !important;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
         }
-        #pinModal .modal-content { background-color: #1a1a1a !important; color: white !important; }
-        #pinModal .pin-btn { border: none; background: rgba(255,255,255,0.1); color: white; }
-
-        /* SPLASH SCREEN */
-        #custom-splash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #ffffff; z-index: 999999; display: flex; justify-content: center; align-items: center; transition: opacity 0.5s ease-out; }
-        .splash-logo { max-width: 60%; height: auto; }
-        .splash-hidden { opacity: 0; pointer-events: none; }
-       </style>
