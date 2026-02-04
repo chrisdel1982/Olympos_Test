@@ -21,7 +21,15 @@ async function loadData() {
     // 1. Πρώτα προσπάθεια φόρτωσης από GitHub (Server First)
     try {
 // Το ?t=... εξασφαλίζει ότι παίρνουμε πάντα το φρέσκο, όχι cached
-const response = await fetch('olympos-backup.json?t=' + new Date().getTime());
+try {
+    const response = await fetch('olympos-backup.json?t=' + new Date().getTime());
+    const data = await response.json();
+    console.log("JSON loaded:", data);
+    // Αν θέλεις, μπορείς να συνεχίσεις κανονικά μετά με το data
+} catch (error) {
+    console.error("JSON LOAD ERROR:", error);
+}
+
 
 if (response.ok) {
     const serverData = await response.json();
