@@ -1,0 +1,87 @@
+    .player-age {
+    font-size: 0.85rem;
+    color: #666;
+    font-weight: 500;    
+    /* ΤΟ ΚΟΛΠΟ ΓΙΑ ΝΑ ΠΑΕΙ ΤΕΡΜΑ ΚΑΤΩ: */
+    margin-top: auto !important; /* Σπρώχνει το στοιχείο στο τέλος της κάρτας */
+        /* Λίγο "αέρα" από τον πάτο της κάρτας για να μην ακουμπάει */
+    padding-bottom: 5px; 
+    width: 100%;
+}
+
+.player-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1rem 0.8rem;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    overflow: visible;
+}
+
+.player-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1rem 0.8rem;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    border: 2px solid transparent; /* Αόρατο περίγραμμα αρχικά */
+    
+    /* ΣΗΜΑΝΤΙΚΟ: Κόβει οτιδήποτε εξέχει από τις γωνίες */
+    overflow: hidden; 
+}
+
+.coach-photo-bg::before {
+    background-color: #117f0dd8 !important; 
+    background-image: none !important;
+}
+
+.coach-photo-bg .jersey-team-name {
+    display: none;
+}
+
+.coach-photo-bg .player-number {
+    font-family: 'Roboto Condensed', sans-serif !important; /* Όχι Impact */
+    font-size: 1.0rem !important; /* ΜΙΚΡΑ ΓΡΑΜΜΑΤΑ */
+    font-weight: 700 !important;
+    color: #000000 !important;
+    transform: none !important; /* Όχι τέντωμα */
+    letter-spacing: 1px !important;
+    
+    /* Τοποθέτηση ψηλά */
+    margin-top: 10px !important; 
+    margin-bottom: auto !important;
+    text-shadow: none !important;
+}
+
+    .player-card {
+        padding: 0.8rem;
+    }
+
+    .player-name {
+        font-size: 0.95rem;
+        /* ΤΟ ΚΟΛΠΟ ΓΙΑ ΤΙΣ 2 ΓΡΑΜΜΕΣ: */
+    white-space: normal !important; /* Επιτρέπει αλλαγή γραμμής */
+    word-spacing: 999px;            /* Αναγκάζει κάθε λέξη να πάει σε νέα γραμμή! */
+    line-height: 1.2;               /* Σωστό κενό ανάμεσα στις γραμμές */
+    
+    /* ΚΛΕΙΔΩΜΑ ΥΨΟΥΣ (Για να είναι όλες οι κάρτες ίσες) */
+    min-height: 2.4em;              /* Πιάνει χώρο για 2 γραμμές ούτως ή άλλως */
+    display: flex;
+    align-items: center;            /* Κεντράρισμα κάθετα */
+    justify-content: center;        /* Κεντράρισμα οριζόντια */
+    text-align: center;
+    z-index: 10;
+    }
+
+.player-card.flipped .card-inner {
+    transform: rotateY(180deg);
+}
+
+    .player-age { 
+        color: #aaaaaa !important; 
+    }
