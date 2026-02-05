@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Olympos Debug Tool</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .test {
+            background: #2a2a2a;
+            border: 1px solid #00ff00;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .success { color: #00ff00; }
+        .error { color: #ff0046; }
+        .warning { color: #ffa500; }
+        h1 { color: #00ff00; text-align: center; }
+        pre { background: #000; padding: 10px; overflow-x: auto; }
+        button {
+            background: #00ff00;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 5px;
+        }
+        button:hover { background: #00cc00; }
+    </style>
+</head>
+<body>
+    <h1>🔍 OLYMPOS FC - DIAGNOSTIC TOOL</h1>
+    
+    <div class="test">
+        <h3>📊 Test Results:</h3>
+        <div id="results"></div>
+    </div>
+
+    <div class="test">
+        <h3>🔧 Actions:</h3>
+        <button onclick="runAllTests()">🔄 Re-run All Tests</button>
+        <button onclick="testBackupFile()">📦 Test Backup JSON</button>
+        <button onclick="testJavaScript()">⚙️ Test JavaScript Files</button>
+        <button onclick="testCSS()">🎨 Test CSS Files</button>
+    </div>
+
+    <div class="test">
+        <h3>📝 Console Logs:</h3>
+        <pre id="console"></pre>
+    </div>
+
+    <script>
+        const results = document.getElementById('results');
+        const consoleLog = document.getElementById('console');
+        
+        // Override console.log to capture logs
+        const originalLog = console.log;
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            consoleLog.textContent += args.join(' ') + '\n';
+        };
+
+        async function addResult(test, status, message) {
+            const className = status === 'success' ? 'success' : status === 'error' ? 'error' : 'warning';
+            results.innerHTML += `<div class="${className}">
+                ${status === 'success' ? '✅' : status === 'error' ? '❌' : '⚠️'} 
+                <strong>${test}:</strong> ${message}
+            </div>`;
+        }
+
+        async function testBackupFile() {
+            console.log('Testing olympos-backup.json...');
+            
+            try {
+                const response = await fetch('olympos-backup.json?t=' + new Date().getTime());
+                
+                if (!response.ok) {
+                    addResult('Backup File', 'error', `HTTP ${response.status} - File not found or not accessible`);
+                    console.error('Failed to load olympos-backup.json:', response.status);
+                    return false;
+                }
+                
+                const data = await response.json();
+                addResult('Backup File', 'success', `Loaded successfully! Found ${data.roster?.length || 0} players, ${data.fixtures?.length || 0} fixtures, ${data.news?.length || 0} news`);
+                console.log('Backup data:', data);
+                return true;
+                
+            } catch (error) {
+                addResult('Backup File', 'error', `Error: ${error.message}`);
+                console.error('Error loading backup:', error);
+                return false;
+            }
+        }
+
+        async function testJavaScript() {
+            console.log('Testing JavaScript files...');
+            
+            const jsFiles = ['js/ui-init.js', 'js/main.js'];
+            
+            for (const file of jsFiles) {
+                try {
+                    const response = await fetch(file);
+                    if (response.ok) {
+                        const text = await response.text();
+                        addResult(`JS: ${file}`, 'success', `Loaded (${(text.length / 1024).toFixed(1)}KB)`);
+                    } else {
+                        addResult(`JS: ${file}`, 'error', `HTTP ${response.status}`);
+                    }
+                } catch (error) {
+                    addResult(`JS: ${file}`, 'error', error.message);
+                }
+            }
+        }
+
+        async function testCSS() {
+            console.log('Testing CSS files...');
+            
+            const cssFiles = ['css/main.css'];
+            
+            for (const file of cssFiles) {
+                try {
+                    const response = await fetch(file);
+                    if (response.ok) {
+                        const text = await response.text();
+                        addResult(`CSS: ${file}`, 'success', `Loaded (${(text.length / 1024).toFixed(1)}KB)`);
+                    } else {
+                        addResult(`CSS: ${file}`, 'error', `HTTP ${response.status}`);
+                    }
+                } catch (error) {
+                    addResult(`CSS: ${file}`, 'error', error.message);
+                }
+            }
+        }
+
+        async function checkDOMElements() {
+            console.log('Checking DOM elements...');
+            
+            const elements = [
+                'standingsTable',
+                'scorersContainer',
+                'resultsContainer',
+                'fixturesContainer',
+                'rosterContainer',
+                'newsContainer'
+            ];
+            
+            for (const id of elements) {
+                const el = document.getElementById(id);
+                if (el) {
+                    addResult(`DOM: #${id}`, 'success', 'Element exists');
+                } else {
+                    addResult(`DOM: #${id}`, 'error', 'Element NOT found');
+                }
+            }
+        }
+
+        async function checkLocalStorage() {
+            console.log('Checking localStorage...');
+            
+            try {
+                const data = localStorage.getItem('footballData');
+                if (data) {
+                    const parsed = JSON.parse(data);
+                    addResult('LocalStorage', 'success', `Found data: ${parsed.roster?.length || 0} players`);
+                    console.log('LocalStorage data:', parsed);
+                } else {
+                    addResult('LocalStorage', 'warning', 'No data in localStorage');
+                }
+            } catch (error) {
+                addResult('LocalStorage', 'error', error.message);
+            }
+        }
+
+        async function runAllTests() {
+            results.innerHTML = '<h4>Running diagnostics...</h4>';
+            consoleLog.textContent = '';
+            
+            console.log('=== OLYMPOS FC DIAGNOSTIC REPORT ===');
+            console.log('URL:', window.location.href);
+            console.log('Timestamp:', new Date().toISOString());
+            console.log('');
+            
+            await testBackupFile();
+            await testJavaScript();
+            await testCSS();
+            await checkLocalStorage();
+            
+            console.log('');
+            console.log('=== END OF REPORT ===');
+        }
+
+        // Auto-run on load
+        window.addEventListener('load', () => {
+            setTimeout(runAllTests, 500);
+        });
+    </script>
+</body>
+</html>
