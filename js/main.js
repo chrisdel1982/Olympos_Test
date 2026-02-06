@@ -24,7 +24,7 @@ async function loadData() {
 const response = await fetch('olympos-backup.json?t=' + new Date().getTime());
 
 if (response.ok) {
-    const serverData = await response.json();
+const serverData = await response.json();
     console.log('☁️ Φορτώθηκαν δεδομένα από Server (GitHub).');
     return serverData;
 }
@@ -33,7 +33,7 @@ console.warn('⚠️ Πρόβλημα σύνδεσης με GitHub, ψάχνω �
     }
 
     // 2. Αν αποτύχει το GitHub (π.χ. offline), ψάξε τοπικά
-    const saved = localStorage.getItem('footballData');
+const saved = localStorage.getItem('footballData');
     if (saved) {
 console.log('📂 Φόρτωση τοπικών δεδομένων (Offline Mode).');
 return JSON.parse(saved);
@@ -46,28 +46,28 @@ roster: [],
 news: []
     };
 }
-    function calculateLiveMinute(startTime, half, duration) {
+function calculateLiveMinute(startTime, half, duration) {
     if (half === "FT") return "FT";
     if (half === "HT") return "HT";
     if (!startTime) return "LIVE";
 
-    const now = new Date();
-    const [startHours, startMinutes] = startTime.split(':');
-    const start = new Date();
+const now = new Date();
+const [startHours, startMinutes] = startTime.split(':');
+const start = new Date();
     start.setHours(startHours, startMinutes, 0);
 
     // Διαφορά σε λεπτά
-    let diffInMinutes = Math.floor((now - start) / 60000);
-    
+let diffInMinutes = Math.floor((now - start) / 60000);
+
     if (diffInMinutes < 0) return "0'";
 
     // Υπολογισμός βάσει ημιχρόνου
     // Π.χ. αν είναι 2ο ημίχρονο και διάρκεια 20', ξεκινάμε από το 20' + diff
-    let baseMinutes = (parseInt(half) - 1) * parseInt(duration);
-    let currentMatchMinute = baseMinutes + diffInMinutes + 1; // +1 για να ξεκινάει από το 1'
+let baseMinutes = (parseInt(half) - 1) * parseInt(duration);
+let currentMatchMinute = baseMinutes + diffInMinutes + 1; // +1 για να ξεκινάει από το 1'
 
     // Έλεγχος για καθυστερήσεις ημιχρόνου
-    let halfLimit = parseInt(half) * parseInt(duration);
+let halfLimit = parseInt(half) * parseInt(duration);
     if (currentMatchMinute > halfLimit) {
 let extra = currentMatchMinute - halfLimit;
 return halfLimit + "+" + extra + "'";
@@ -82,10 +82,10 @@ function saveData(dataToSave) {
 }
 
 function exportData() {
-    const dataStr = JSON.stringify(data, null, 2);
-    const dataBlob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(dataBlob);
-    const link = document.createElement('a');
+const dataStr = JSON.stringify(data, null, 2);
+const dataBlob = new Blob([dataStr], { type: 'application/json' });
+const url = URL.createObjectURL(dataBlob);
+const link = document.createElement('a');
     link.href = url;
     link.download = `olympos-backup-${new Date().toISOString().split('T')[0]}.json`;
     link.click();
@@ -94,14 +94,14 @@ function exportData() {
 }
 
 function importData(event) {
-    const file = event.target.files[0];
+const file = event.target.files[0];
     if (!file) return;
 
-    const reader = new FileReader();
+const reader = new FileReader();
     reader.onload = function(e) {
         try {
-            const importedData = JSON.parse(e.target.result);
-            
+const importedData = JSON.parse(e.target.result);
+
             if (!importedData.fixtures || !Array.isArray(importedData.fixtures)) {
                 throw new Error('Μη έγκυρη δομή δεδομένων');
             }
@@ -122,7 +122,7 @@ function importData(event) {
 
             if (confirm('⚠️ ΠΡΟΣΟΧΗ!\n\nΤα τρέχοντα δεδομένα θα αντικατασταθούν.\nΕίσαι σίγουρος;')) {
                 data = importedData;
-                
+
                 // Εξασφάλιση ότι υπάρχει το news array
                 if (!data.news) {
                     data.news = [];
@@ -130,7 +130,7 @@ function importData(event) {
                 if (!data.roster) {
                     data.roster = [];
                 }
-                
+
                 saveData(data);
                 displayStandings();
                 displayResults();
@@ -140,8 +140,8 @@ function importData(event) {
                 updateRosterList();
                 updateNewsList();
                 showToast('Τα δεδομένα εισήχθησαν επιτυχώς!\n\n' + 
-                      'Roster: ' + (data.roster ? data.roster.length : 0) + ' παίκτες\n' +
-                      'Ειδήσεις: ' + (data.news ? data.news.length : 0));
+                    'Roster: ' + (data.roster ? data.roster.length : 0) + ' παίκτες\n' +
+                    'Ειδήσεις: ' + (data.news ? data.news.length : 0));
                 closeAdminPanel();
             }
         } catch (error) {
@@ -153,9 +153,9 @@ function importData(event) {
     event.target.value = '';
 }
 
-  function calculateStandings() {
-    const standings = {};
-    
+function calculateStandings() {
+const standings = {};
+
     // Αρχικοποίηση ομάδων
     TEAMS.forEach(team => {
 standings[team] = {
@@ -177,8 +177,8 @@ standings[team] = {
 round.matches.forEach(match => {
     // Υπολογίζουμε μόνο αν έχει σκορ ΚΑΙ δεν είναι αναβληθέν
     if (match.home && match.away && match.homeScore !== null && match.awayScore !== null && !match.isPostponed) {
-        const home = standings[match.home];
-        const away = standings[match.away];
+const home = standings[match.home];
+const away = standings[match.away];
 
         home.played++;
         away.played++;
@@ -218,7 +218,7 @@ team.gd = team.gf - team.ga;
     });
 
     // Ταξινόμηση
-    const sorted = Object.values(standings).sort((a, b) => {
+const sorted = Object.values(standings).sort((a, b) => {
 if (b.points !== a.points) return b.points - a.points;
 if (b.gd !== a.gd) return b.gd - a.gd;
 return b.gf - a.gf;
@@ -228,10 +228,10 @@ return b.gf - a.gf;
 }
 
 function displayStandings() {
-    const standings = calculateStandings();
-    
+const standings = calculateStandings();
+
     // ΕΠΙΚΕΦΑΛΙΔΕΣ: Αφαιρέσαμε το γκρι φόντο και το bold από το 'Β'
-    const tableHead = document.querySelector('#standingsTable thead tr');
+const tableHead = document.querySelector('#standingsTable thead tr');
     tableHead.innerHTML = `
 <th style="width: 40px;">Θέση</th>
 <th style="text-align: left;">Ομάδα</th>
@@ -245,7 +245,7 @@ function displayStandings() {
 <th style="width: 110px;">Φόρμα</th>
     `;
 
-    const tbody = document.getElementById('standingsBody');
+const tbody = document.getElementById('standingsBody');
     tbody.innerHTML = '';
 
     standings.forEach((team, index) => {
@@ -265,13 +265,13 @@ else if (index >= totalTeams - 2) indicatorClass = 'indicator-red';
 const last5 = team.history.slice(-5);
 let formHTML = '<div class="form-container">';
 last5.forEach(result => {
-    let badgeClass = '';
-    let letter = '';
+let badgeClass = '';
+let letter = '';
     if (result === 'W') { badgeClass = 'form-win'; letter = 'N'; }
     else if (result === 'D') { badgeClass = 'form-draw'; letter = 'I'; }
     else if (result === 'L') { badgeClass = 'form-loss'; letter = 'H'; }
     else if (result === 'A') { badgeClass = 'form-postponed'; letter = 'A'; }
-    
+
     formHTML += `<span class="form-badge ${badgeClass}">${letter}</span>`;
 });
 formHTML += '</div>';
@@ -293,27 +293,27 @@ row.innerHTML = `
 tbody.appendChild(row);
     });
 }
-  function displayResults() {
-    const container = document.getElementById('resultsContainer');
+function displayResults() {
+const container = document.getElementById('resultsContainer');
     container.innerHTML = '';
-    let hasResults = false;
-    const reversedFixtures = [...data.fixtures].reverse();
+let hasResults = false;
+const reversedFixtures = [...data.fixtures].reverse();
 
     reversedFixtures.forEach(round => {
 const roundMatches = round.matches.filter(m => (m.homeScore !== null && m.awayScore !== null) || m.isPostponed);
 
 if (roundMatches.length > 0) {
     hasResults = true;
-    const section = document.createElement('div');
+const section = document.createElement('div');
     section.className = 'round-section';
-    
-    const header = document.createElement('div');
+
+const header = document.createElement('div');
     header.className = 'round-header';
     header.textContent = `Αγωνιστική ${round.round}`;
     section.appendChild(header);
 
     roundMatches.forEach(match => {
-        const div = document.createElement('div');
+const div = document.createElement('div');
         div.className = 'match-row';
         div.style.display = 'block'; 
         div.style.padding = '0';
@@ -321,11 +321,11 @@ if (roundMatches.length > 0) {
         if (match.home === MY_TEAM || match.away === MY_TEAM) { div.style.background = '#fffdf0'; }
 
         // ΑΛΛΑΓΗ ΕΔΩ: Γράφουμε "ΑΝΑΒΟΛΗ" αντί για "ΑΝΑΒΛΗΘΗΚΕ"
-        let centerContent = match.isPostponed ? 
+let centerContent = match.isPostponed ? 
             `<span class="postponed-badge">ΑΝΑΒΟΛΗ</span>` : 
             `<div class="match-score-box">${match.homeScore} - ${match.awayScore}</div>`;
 
-        let mainMatchHTML = `
+let mainMatchHTML = `
             <div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: center; padding: 1rem;">
                 <div class="team-left">${match.home}</div>
                 <div>${centerContent}</div>
@@ -333,20 +333,20 @@ if (roundMatches.length > 0) {
             </div>`;
 
         // --- ΕΜΦΑΝΙΣΗ ΣΤΑΤΙΣΤΙΚΩΝ ---
-        let statsHTML = '';
-        let hasStats = false;
-        let contentHTML = [];
+let statsHTML = '';
+let hasStats = false;
+let contentHTML = [];
 
         if (match.scorers && match.scorers.length > 0 && !match.isPostponed) {
             hasStats = true;
-            const counts = {};
+const counts = {};
             match.scorers.forEach(name => { counts[name] = (counts[name] || 0) + 1; });
 
             for (const [name, count] of Object.entries(counts)) {
-                let shortName = name;
-                const parts = name.split(' ');
+let shortName = name;
+const parts = name.split(' ');
                 if(parts.length > 1) shortName = parts.slice(1).join(' ') + ' ' + parts[0].charAt(0) + '.';
-                const goalsStr = count > 1 ? `(${count})` : '';
+const goalsStr = count > 1 ? `(${count})` : '';
                 contentHTML.push(`<span class="match-scorer-entry">⚽ ${shortName} ${goalsStr}</span>`);
             }
         }
@@ -354,8 +354,8 @@ if (roundMatches.length > 0) {
         if (match.cleanSheetHolders && match.cleanSheetHolders.length > 0 && !match.isPostponed) {
             hasStats = true;
             match.cleanSheetHolders.forEach(name => {
-                 let shortName = name;
-                const parts = name.split(' ');
+let shortName = name;
+const parts = name.split(' ');
                 if(parts.length > 1) shortName = parts.slice(1).join(' ') + ' ' + parts[0].charAt(0) + '.';
                 contentHTML.push(`<span class="match-scorer-entry match-cs-entry">🧤 ${shortName}</span>`);
             });
@@ -375,10 +375,10 @@ if (roundMatches.length > 0) {
     if (!hasResults) { container.innerHTML = '<div class="empty-state"><p>⚽ Δεν υπάρχουν αποτελέσματα ακόμα.</p></div>'; }
 }
 function displayFixtures() {
-    const container = document.getElementById('fixturesContainer');
+const container = document.getElementById('fixturesContainer');
     container.innerHTML = '';
 
-    let hasFixtures = false;
+let hasFixtures = false;
 
     data.fixtures.forEach(round => {
 // Βρίσκουμε αγώνες που ΔΕΝ έχουν σκορ και ΔΕΝ είναι αναβληθέντες
@@ -388,25 +388,25 @@ const roundMatches = round.matches.filter(m =>
 
 if (roundMatches.length > 0) {
     hasFixtures = true;
-    
-    const section = document.createElement('div');
+
+const section = document.createElement('div');
     section.className = 'round-section';
-    
-    const header = document.createElement('div');
+
+const header = document.createElement('div');
     header.className = 'round-header';
     header.textContent = `Αγωνιστική ${round.round}`;
     section.appendChild(header);
 
     roundMatches.forEach(match => {
-        const div = document.createElement('div');
+const div = document.createElement('div');
         div.className = 'match-row';
-        
+
         if (match.home === MY_TEAM || match.away === MY_TEAM) {
             div.style.background = '#fffdf0';
         }
 
-        const homeTeam = match.home || 'ΚΥΨΕΛΗ ΝΕΑΠΟΛΗΣ';
-        const awayTeam = match.away || 'ΚΥΨΕΛΗ ΝΕΑΠΟΛΗΣ';
+const homeTeam = match.home || 'ΚΥΨΕΛΗ ΝΕΑΠΟΛΗΣ';
+const awayTeam = match.away || 'ΚΥΨΕΛΗ ΝΕΑΠΟΛΗΣ';
 
         div.innerHTML = `
             <div class="team-left">${homeTeam}</div>
@@ -426,8 +426,8 @@ container.innerHTML = '<div class="empty-state"><p>🏁 Όλοι οι αγώνε
 }
 // ΝΕΑ ΣΥΝΑΡΤΗΣΗ: Βρίσκει αναλυτικά τα στατιστικά ενός παίκτη
 function getPlayerDetailedStats(playerName) {
-    let goalsLog = [];
-    let cleanSheetsLog = [];
+let goalsLog = [];
+let cleanSheetsLog = [];
 
     // Ψάχνουμε σε όλα τα fixtures
     data.fixtures.forEach(round => {
@@ -435,14 +435,14 @@ round.matches.forEach(match => {
     // Αν δεν έχει γίνει το ματς, το αγνοούμε
     if (match.homeScore === null) return;
 
-    const opponent = (match.home === MY_TEAM) ? match.away : match.home;
-    const score = `${match.homeScore}-${match.awayScore}`;
-    const info = `vs ${opponent} (${score})`;
+const opponent = (match.home === MY_TEAM) ? match.away : match.home;
+const score = `${match.homeScore}-${match.awayScore}`;
+const info = `vs ${opponent} (${score})`;
 
     // 1. Έλεγχος για Γκολ
     if (match.scorers) {
         // Πόσες φορές υπάρχει το όνομα του παίκτη στη λίστα scorers;
-        const goalsInMatch = match.scorers.filter(s => s === playerName).length;
+const goalsInMatch = match.scorers.filter(s => s === playerName).length;
         if (goalsInMatch > 0) {
             goalsLog.push({ match: info, count: goalsInMatch });
         }
@@ -458,7 +458,7 @@ round.matches.forEach(match => {
     return { goalsLog, cleanSheetsLog };
 }
 function displayRoster() {
-    const container = document.getElementById('rosterContainer');
+const container = document.getElementById('rosterContainer');
     container.className = ''; 
     container.innerHTML = '';
 
@@ -467,8 +467,8 @@ container.innerHTML = '<div class="empty-state"><p>👥 Δεν υπάρχουν 
 return;
     }
 
-    const currentYear = new Date().getFullYear(); 
-    const categories = [
+const currentYear = new Date().getFullYear(); 
+const categories = [
 { title: 'ΤΕΡΜΑΤΟΦΥΛΑΚΕΣ', keywords: ['(gk)'], icon: '🧤' },
 { title: 'ΑΜΥΝΤΙΚΟΙ', keywords: ['(cb)', '(lb)', '(rb)', '(sw)', '(lwb)', '(rwb)', '(wb)'], icon: '🛡️' },
 { title: 'ΜΕΣΟΙ', keywords: ['(cm)', '(dm)', '(am)', '(lm)', '(rm)'], icon: '⚙️' },
@@ -476,51 +476,51 @@ return;
 { title: 'TECHNICAL STAFF', keywords: ['προπονητής', 'coach'], icon: '👨‍🏫' }
     ];
 
-    let availablePlayers = [...data.roster];
+let availablePlayers = [...data.roster];
 
     categories.forEach(category => {
 const groupPlayers = availablePlayers.filter(p => {
-    const posFull = (p.position || '').toLowerCase();
-    const primaryPos = posFull.split('/')[0]; 
+const posFull = (p.position || '').toLowerCase();
+const primaryPos = posFull.split('/')[0]; 
     return category.keywords.some(keyword => primaryPos.includes(keyword));
 });
 
 if (groupPlayers.length > 0) {
-    const titleDiv = document.createElement('div');
+const titleDiv = document.createElement('div');
     titleDiv.className = 'roster-category-title';
     titleDiv.innerHTML = `${category.icon} ${category.title}`;
     container.appendChild(titleDiv);
 
-    const gridDiv = document.createElement('div');
+const gridDiv = document.createElement('div');
     gridDiv.className = 'roster-grid';
     groupPlayers.sort((a, b) => (a.number || 999) - (b.number || 999));
 
     groupPlayers.forEach(player => {
-        const stats = getPlayerDetailedStats(player.name);
-        const isGoalKeeper = player.position.toLowerCase().includes('gk');
-        const card = document.createElement('div');
+const stats = getPlayerDetailedStats(player.name);
+const isGoalKeeper = player.position.toLowerCase().includes('gk');
+const card = document.createElement('div');
         card.className = 'player-card';
         card.setAttribute('onclick', "this.classList.toggle('flipped')");
 
-        const isCoach = category.title === 'TECHNICAL STAFF';
-        const photoClass = isCoach ? 'player-photo coach-photo-bg' : 'player-photo';
-        const displayNumber = player.number || (isCoach ? 'COACH' : '-');
-        const captainBadge = player.isCaptain ? `<div class="captain-badge">C</div>` : '';
+const isCoach = category.title === 'TECHNICAL STAFF';
+const photoClass = isCoach ? 'player-photo coach-photo-bg' : 'player-photo';
+const displayNumber = player.number || (isCoach ? 'COACH' : '-');
+const captainBadge = player.isCaptain ? `<div class="captain-badge">C</div>` : '';
 
-        let ageHTML = '';
+let ageHTML = '';
         if (player.birthYear && !isCoach) { 
             ageHTML = `<div class="player-age">${player.birthYear} - ${currentYear - player.birthYear} ετών</div>`;
         }
-        
-        let backContent = '';
+
+let backContent = '';
         if (stats.goalsLog.length > 0) {
             backContent += `<div class="stat-header">⚽ ${player.goals || 0} ΓΚΟΛ</div>`;
             stats.goalsLog.forEach(log => {
-                let opponentInfo = log.match.replace('vs ', '').replace('ΟΛΥΜΠΟΣ ΔΕΝΔΡΟΠΟΤΑΜΟΥ', '').trim();
-                const scoreMatch = opponentInfo.match(/\(\d+-\d+\)/);
-                const scoreStr = scoreMatch ? scoreMatch[0].replace('(', '').replace(')', '') : '';
-                let teamName = opponentInfo.replace(/\(\d+-\d+\)/, '').trim();
-                
+let opponentInfo = log.match.replace('vs ', '').replace('ΟΛΥΜΠΟΣ ΔΕΝΔΡΟΠΟΤΑΜΟΥ', '').trim();
+const scoreMatch = opponentInfo.match(/\(\d+-\d+\)/);
+const scoreStr = scoreMatch ? scoreMatch[0].replace('(', '').replace(')', '') : '';
+let teamName = opponentInfo.replace(/\(\d+-\d+\)/, '').trim();
+
                 // padding-left: 2px για να κολλήσει αριστερά και font-size: 0.65rem για να μικρύνει
                 backContent += `
                     <div style="position: relative; padding: 5px 0 5px 2px; border-bottom: 1px solid rgba(0,0,0,0.05); min-height: 35px; text-align: left;">
@@ -576,14 +576,14 @@ if (groupPlayers.length > 0) {
     });
 }
 function displayTopScorers() {
-    const container = document.getElementById('scorersContainer');
+const container = document.getElementById('scorersContainer');
     if (!container) return;
-    
+
     container.innerHTML = '';
-    
+
     if (!data.roster) return;
 
-    const scorers = data.roster
+const scorers = data.roster
 .filter(p => p.goals && p.goals > 0)
 .sort((a, b) => b.goals - a.goals);
 
@@ -592,11 +592,11 @@ container.innerHTML = '<div style="text-align: center; padding: 1rem; color: #99
 return;
     }
 
-    const list = document.createElement('div');
+const list = document.createElement('div');
     list.className = 'scorers-list';
 
     // Header
-    const header = document.createElement('div');
+const header = document.createElement('div');
     header.className = 'scorer-row scorer-header';
     header.innerHTML = `
 <div class="col-rank">#</div>
@@ -617,8 +617,8 @@ let displayName = player.name;
 const parts = player.name.trim().split(' ');
 
 if (parts.length >= 2) {
-    const firstName = parts[0]; 
-    const lastName = parts.slice(1).join(' ');
+const firstName = parts[0]; 
+const lastName = parts.slice(1).join(' ');
     displayName = `${lastName} ${firstName.charAt(0)}.`;
 }
 
@@ -638,19 +638,19 @@ list.appendChild(row);
     container.appendChild(list);
 }
 function addPlayer() {
-    const number = parseInt(document.getElementById('playerNumber').value);
-    const name = document.getElementById('playerName').value.trim();
-    const birthYear = parseInt(document.getElementById('playerBirthYear').value);
-    const positionSelect = document.getElementById('playerPosition');
-    const selectedOptions = Array.from(positionSelect.selectedOptions).map(opt => opt.value);
-    const position = selectedOptions.filter(p => p !== '').join(' / ');
-    const isCaptain = document.getElementById('isCaptainPlayer').checked;
+const number = parseInt(document.getElementById('playerNumber').value);
+const name = document.getElementById('playerName').value.trim();
+const birthYear = parseInt(document.getElementById('playerBirthYear').value);
+const positionSelect = document.getElementById('playerPosition');
+const selectedOptions = Array.from(positionSelect.selectedOptions).map(opt => opt.value);
+const position = selectedOptions.filter(p => p !== '').join(' / ');
+const isCaptain = document.getElementById('isCaptainPlayer').checked;
 
     if (!name || !position) {
 showToast(' Συμπλήρωσε Όνομα και Θέση!');
 return;
     }
-    
+
     // Έλεγχος αριθμού
     if (number && data.roster && data.roster.some(p => p.number === number)) {
 showToast(' Ο αριθμός φανέλας υπάρχει ήδη!');
@@ -667,7 +667,7 @@ position,
 isCaptain: isCaptain,
 goals: 0 // ΝΕΟ: Αρχικοποίηση γκολ
     });
-    
+
     saveData(data);
     displayRoster();
     displayTopScorers(); // ΝΕΟ
@@ -681,14 +681,14 @@ function clearPlayerForm() {
     document.getElementById('playerName').value = '';
     document.getElementById('playerBirthYear').value = ''; // Καθαρισμός έτους
     document.getElementById('isCaptainPlayer').checked = false;
-    const select = document.getElementById('playerPosition');
+const select = document.getElementById('playerPosition');
     for (let option of select.options) {
 option.selected = false;
     }
 }
 
 function updateRosterList() {
-    const container = document.getElementById('rosterList');
+const container = document.getElementById('rosterList');
     container.innerHTML = '';
 
     if (!data.roster || data.roster.length === 0) {
@@ -696,7 +696,7 @@ container.innerHTML = '<div style="text-align: center; color: #999;">Δεν υπ
 return;
     }
 
-    const sortedRoster = [...data.roster].sort((a, b) => (a.number || 999) - (b.number || 999));
+const sortedRoster = [...data.roster].sort((a, b) => (a.number || 999) - (b.number || 999));
 
     sortedRoster.forEach((player) => {
 const div = document.createElement('div');
@@ -713,7 +713,7 @@ div.innerHTML = `
         <strong>${displayNum}</strong> ${player.name} ${icon}
         <div style="font-size: 0.8rem; color: #666;">${player.position}</div>
     </div>
-    
+
     <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 5px;">
         <div style="display:flex; gap:5px;">
             <div style="font-weight: bold; color: #1a472a; background: #e8f5e9; padding: 2px 8px; border-radius: 10px; font-size: 0.8rem; border: 1px solid #c8e6c9;">
@@ -746,7 +746,7 @@ showToast(' Ο παίκτης διαγράφηκε!');
 }
 // ΝΕΑ ΣΥΝΑΡΤΗΣΗ: Αλλαγή γκολ από το Admin
 function changeGoals(playerName, change) {
-    const player = data.roster.find(p => p.name === playerName);
+const player = data.roster.find(p => p.name === playerName);
     if (player) {
 if (!player.goals) player.goals = 0;
 player.goals += change;
@@ -762,7 +762,7 @@ displayTopScorers(); // Ενημέρωση πίνακα σκόρερ
 let newsPhotoBase64 = null;
 
 function previewNewsPhoto(event) {
-    const file = event.target.files[0];
+const file = event.target.files[0];
     if (!file) return;
 
     if (!file.type.startsWith('image/')) {
@@ -777,7 +777,7 @@ event.target.value = '';
 return;
     }
 
-    const reader = new FileReader();
+const reader = new FileReader();
     reader.onload = function(e) {
 newsPhotoBase64 = e.target.result;
 document.getElementById('newsPhotoPreview').style.display = 'block';
@@ -793,7 +793,7 @@ function removeNewsPhoto() {
     document.getElementById('newsPhotoPreviewImg').src = '';
 }
 function displayNews() {
-    const container = document.getElementById('newsContainer');
+const container = document.getElementById('newsContainer');
     container.innerHTML = '';
 
     if (!data.news) { data.news = []; }
@@ -804,7 +804,7 @@ return;
     }
 
     // Ταξινόμηση
-    const sortedNews = [...data.news].sort((a, b) => new Date(b.date) - new Date(a.date));
+const sortedNews = [...data.news].sort((a, b) => new Date(b.date) - new Date(a.date));
 
     sortedNews.forEach(newsItem => {
 const div = document.createElement('div');
@@ -846,8 +846,8 @@ container.appendChild(div);
 }
 
 function addNews() {
-    const title = document.getElementById('newsTitle').value.trim();
-    const content = document.getElementById('newsContent').value.trim();
+const title = document.getElementById('newsTitle').value.trim();
+const content = document.getElementById('newsContent').value.trim();
 
     if (!title || !content) {
         showToast(' Συμπλήρωσε τίτλο και περιεχόμενο!');
@@ -858,7 +858,7 @@ function addNews() {
         data.news = [];
     }
 
-  const newsItem = {
+const newsItem = {
     id: Date.now(),
     title: title,
     content: content,
@@ -891,7 +891,7 @@ function clearNewsForm() {
 }
 
 function updateNewsList() {
-    const container = document.getElementById('newsList');
+const container = document.getElementById('newsList');
     container.innerHTML = '';
 
     if (!data.news) {
@@ -903,15 +903,15 @@ function updateNewsList() {
         return;
     }
 
-    const sortedNews = [...data.news].sort((a, b) => new Date(b.date) - new Date(a.date));
+const sortedNews = [...data.news].sort((a, b) => new Date(b.date) - new Date(a.date));
 
     sortedNews.forEach(newsItem => {
-        const div = document.createElement('div');
+const div = document.createElement('div');
         div.className = 'roster-item';
-        const shortContent = newsItem.content.length > 50 
+const shortContent = newsItem.content.length > 50 
             ? newsItem.content.substring(0, 50) + '...' 
             : newsItem.content;
-        
+
         div.innerHTML = `
             <div>
                 <strong>${newsItem.title}</strong><br>
@@ -923,7 +923,7 @@ function updateNewsList() {
     });
 }
 
-       // Κώδικας Πλοήγησης (Με αυτόματο κλείσιμο καρτών & σβήσιμο NEW)
+    // Κώδικας Πλοήγησης (Με αυτόματο κλείσιμο καρτών & σβήσιμο NEW)
 document.querySelectorAll('.nav-link').forEach(link => {
     link.addEventListener('click', function(e) {
 e.preventDefault();
@@ -966,12 +966,12 @@ function saveGeneralSettings() {
     // ---------------------------------------------------------
     // 1. ΑΠΟΘΗΚΕΥΣΗ ΡΥΘΜΙΣΕΩΝ & LIVE (Όπως πριν)
     // ---------------------------------------------------------
-    const dateInput = document.getElementById('matchDateInput');
-    const timeInput = document.getElementById('matchTimeInput');
-    const stadiumInput = document.getElementById('matchStadiumInput');
-    const mapInput = document.getElementById('matchMapLinkInput');
-    const countdownInput = document.getElementById('countdownTargetInput');
-    const announcementInput = document.getElementById('announcementInput');
+const dateInput = document.getElementById('matchDateInput');
+const timeInput = document.getElementById('matchTimeInput');
+const stadiumInput = document.getElementById('matchStadiumInput');
+const mapInput = document.getElementById('matchMapLinkInput');
+const countdownInput = document.getElementById('countdownTargetInput');
+const announcementInput = document.getElementById('announcementInput');
 
     if (dateInput) data.matchDate = dateInput.value;
     if (timeInput) data.matchTime = timeInput.value;
@@ -981,12 +981,12 @@ function saveGeneralSettings() {
     if (announcementInput) data.announcement = announcementInput.value;
 
     // Live Score Settings
-    const liveCheck = document.getElementById('liveModeCheckbox');
-    const liveHome = document.getElementById('liveHomeScore');
-    const liveAway = document.getElementById('liveAwayScore');
-    const liveHalf = document.getElementById('liveHalf');
-    const liveDur = document.getElementById('liveHalfDuration');
-    const liveStart = document.getElementById('liveStartTime');
+const liveCheck = document.getElementById('liveModeCheckbox');
+const liveHome = document.getElementById('liveHomeScore');
+const liveAway = document.getElementById('liveAwayScore');
+const liveHalf = document.getElementById('liveHalf');
+const liveDur = document.getElementById('liveHalfDuration');
+const liveStart = document.getElementById('liveStartTime');
 
     if (!data.liveScore) data.liveScore = {};
     if (liveCheck) data.liveScore.active = liveCheck.checked;
@@ -997,10 +997,10 @@ function saveGeneralSettings() {
     if (liveStart) data.liveScore.startTime = liveStart.value;
 
     // Special Match
-    const specialCheck = document.getElementById('useSpecialMatchCheckbox');
-    const specialType = document.getElementById('specialMatchTypeInput');
-    const specialHome = document.getElementById('specialHomeInput');
-    const specialAway = document.getElementById('specialAwayInput');
+const specialCheck = document.getElementById('useSpecialMatchCheckbox');
+const specialType = document.getElementById('specialMatchTypeInput');
+const specialHome = document.getElementById('specialHomeInput');
+const specialAway = document.getElementById('specialAwayInput');
 
     if (!data.specialMatch) data.specialMatch = {};
     if (specialCheck && specialCheck.checked) {
@@ -1019,17 +1019,17 @@ data.specialMatch.away = null;
 data.fixtures.forEach((round, roundIndex) => {
     round.matches.forEach((match, matchIndex) => {
         // Βρίσκουμε τα input scores
-        const homeScoreIn = document.getElementById(`score-home-${roundIndex}-${matchIndex}`);
-        const awayScoreIn = document.getElementById(`score-away-${roundIndex}-${matchIndex}`);
-        const postponeIn = document.getElementById(`postpone-${roundIndex}-${matchIndex}`);
+const homeScoreIn = document.getElementById(`score-home-${roundIndex}-${matchIndex}`);
+const awayScoreIn = document.getElementById(`score-away-${roundIndex}-${matchIndex}`);
+const postponeIn = document.getElementById(`postpone-${roundIndex}-${matchIndex}`);
 
         // Α. Αποθήκευση Σκορ (Νούμερα)
         if (homeScoreIn) {
-            const hVal = homeScoreIn.value.trim();
+const hVal = homeScoreIn.value.trim();
             match.homeScore = (hVal === '') ? null : parseInt(hVal);
         }
         if (awayScoreIn) {
-            const aVal = awayScoreIn.value.trim();
+const aVal = awayScoreIn.value.trim();
             match.awayScore = (aVal === '') ? null : parseInt(aVal);
         }
         if (postponeIn) {
@@ -1040,18 +1040,18 @@ data.fixtures.forEach((round, roundIndex) => {
         // Βρίσκουμε τη γραμμή (row) του αγώνα
         if (homeScoreIn) {
             // Πάμε στον γονέα (τη γραμμή) για να ψάξουμε μέσα της
-            const row = homeScoreIn.closest('.match-input-row') || homeScoreIn.parentElement.parentElement;
-            
+const row = homeScoreIn.closest('.match-input-row') || homeScoreIn.parentElement.parentElement;
+
             if (row) {
                 // Ψάχνουμε όλα τα ταμπελάκια με την κλάση .scorer-tag μέσα σε αυτή τη γραμμή
-                const scorerTags = row.querySelectorAll('.scorer-tag');
-                
+const scorerTags = row.querySelectorAll('.scorer-tag');
+
                 // Φτιάχνουμε μια νέα λίστα και βάζουμε τα ονόματα
-                const currentScorers = [];
+const currentScorers = [];
                 scorerTags.forEach(tag => {
                     // Παίρνουμε το κείμενο και καθαρίζουμε τυχόν κενά ή το "x"
                     // (Υποθέτουμε ότι το όνομα είναι το κείμενο του tag)
-                    let name = tag.innerText.replace('×', '').trim(); // Αφαιρούμε το x κλεισίματος αν υπάρχει στο text
+let name = tag.innerText.replace('×', '').trim(); // Αφαιρούμε το x κλεισίματος αν υπάρχει στο text
                     if(name) currentScorers.push(name);
                 });
 
@@ -1067,7 +1067,7 @@ data.fixtures.forEach((round, roundIndex) => {
     // 3. ΛΗΨΗ ΑΡΧΕΙΟΥ
     // ---------------------------------------------------------
     saveData(data); 
-    
+
     displayNextMatch();
     displayStandings() 
 
@@ -1075,12 +1075,12 @@ data.fixtures.forEach((round, roundIndex) => {
 }
 let countdownInterval = null; // Μεταβλητή για να σταματάμε το χρονόμετρο αν χρειαστεί
 function displayNextMatch() {
-    const container = document.getElementById('nextMatchContainer');
+const container = document.getElementById('nextMatchContainer');
     if (!container || !data) return;
     container.innerHTML = '';
 
-    let nextMatch = null;
-    let matchType = 'ΕΠΟΜΕΝΟΣ ΑΓΩΝΑΣ';
+let nextMatch = null;
+let matchType = 'ΕΠΟΜΕΝΟΣ ΑΓΩΝΑΣ';
 
     // 1. Έλεγχος για Εμβόλιμο Αγώνα
     if (data.specialMatch && data.specialMatch.home) {
@@ -1089,7 +1089,7 @@ matchType = data.specialMatch.type || 'ΕΜΒΟΛΙΜΟΣ ΑΓΩΝΑΣ';
     } else {
 // 2. Εύρεση επόμενου αγώνα
 for (const round of data.fixtures) {
-    const m = round.matches.find(m => (m.home === MY_TEAM || m.away === MY_TEAM) && m.homeScore === null);
+const m = round.matches.find(m => (m.home === MY_TEAM || m.away === MY_TEAM) && m.homeScore === null);
     if (m) { nextMatch = m; break; }
 }
     }
@@ -1097,8 +1097,8 @@ for (const round of data.fixtures) {
     if (!nextMatch) return;
 
     // Logic για Live Score
-    const isLive = data.liveScore && data.liveScore.active;
-    let liveMinuteDisplay = "";
+const isLive = data.liveScore && data.liveScore.active;
+let liveMinuteDisplay = "";
     if (isLive) {
 liveMinuteDisplay = calculateLiveMinute(
     data.liveScore.startTime, 
@@ -1106,8 +1106,8 @@ liveMinuteDisplay = calculateLiveMinute(
     data.liveScore.duration
 );
     }
-    
-    const countdownStyle = isLive ? 'display: none;' : 'display: block;';
+
+const countdownStyle = isLive ? 'display: none;' : 'display: block;';
 
     // HTML Κάρτας
     container.innerHTML = `
@@ -1117,13 +1117,13 @@ liveMinuteDisplay = calculateLiveMinute(
         <span style="font-weight:800; text-transform: uppercase;">${isLive ? '🔴 LIVE NOW' : matchType}</span>
         <span>⏰ ${data.matchTime || ''}</span>
     </div>
-    
+
     <div id="countdown-display" style="background: var(--primary-color); color: #fff; text-align: center; padding: 5px; font-size: 0.9rem; font-weight: bold; ${countdownStyle}">
     </div>
 
     <div class="nm-body">
         <div class="nm-team home ${nextMatch.home === MY_TEAM ? 'my-team' : ''}">${nextMatch.home}</div>
-        
+
         <div class="center-area">
             ${isLive ? `
                 <div style="text-align:center;">
@@ -1139,21 +1139,21 @@ liveMinuteDisplay = calculateLiveMinute(
         <div class="nm-team away ${nextMatch.away === MY_TEAM ? 'my-team' : ''}">${nextMatch.away}</div>
     </div>
     <div class="nm-stadium">🏟️ ${data.matchStadium || ''}</div>
-    
+
     <div class="nm-footer" style="display: flex; padding: 0; align-items: stretch; height: 50px;">
-        
+
         <a href="${data.matchMapLink || '#'}" target="_blank" 
-           style="flex: 1; display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; font-weight: 700; font-size: 1.1rem; letter-spacing: 0.5px;">
+        style="flex: 1; display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; font-weight: 700; font-size: 1.1rem; letter-spacing: 0.5px;">
             📍 ΟΔΗΓΙΕΣ ΓΙΑ ΤΟ ΓΗΠΕΔΟ
         </a>
 
         <div style="width: 1px; background: rgba(255,255,255,0.2); margin: 10px 0;"></div>
 
         <div onclick="openSquadModal('${nextMatch.home}', '${nextMatch.away}', '${data.matchDate}', '${data.matchTime}', '${data.matchStadium}', '${data.matchMapLink}')" 
-             style="width: 60px; display: flex; align-items: center; justify-content: center; cursor: pointer; background: rgba(0,0,0,0.1); transition: background 0.3s;"
-             onmouseover="this.style.background='rgba(0,0,0,0.2)'" 
-             onmouseout="this.style.background='rgba(0,0,0,0.1)'">
-             <i class="fa-solid fa-share-nodes" style="color: white; font-size: 1.4rem;"></i>
+            style="width: 60px; display: flex; align-items: center; justify-content: center; cursor: pointer; background: rgba(0,0,0,0.1); transition: background 0.3s;"
+            onmouseover="this.style.background='rgba(0,0,0,0.2)'" 
+            onmouseout="this.style.background='rgba(0,0,0,0.1)'">
+            <i class="fa-solid fa-share-nodes" style="color: white; font-size: 1.4rem;"></i>
         </div>
 
     </div>
@@ -1166,16 +1166,16 @@ startCountdown(data.countdownTarget);
 }
 // ΝΕΑ ΣΥΝΑΡΤΗΣΗ: Υπολογισμός Χρόνου
 function startCountdown(targetDateString) {
-    const display = document.getElementById('countdown-display');
+const display = document.getElementById('countdown-display');
     if (!display) return;
 
-    const targetDate = new Date(targetDateString).getTime();
-    
+const targetDate = new Date(targetDateString).getTime();
+
     // Καθαρισμός προηγούμενου χρονομέτρου για να μην τρέχουν διπλά
     if (countdownInterval) clearInterval(countdownInterval);
 
     // Συνάρτηση που τρέχει κάθε δευτερόλεπτο
-    const updateTimer = () => {
+const updateTimer = () => {
 const now = new Date().getTime();
 const distance = targetDate - now;
 
@@ -1216,8 +1216,8 @@ display.innerHTML = `⏳ Σέντρα σε: ${days}μ ${hours}ω ${minutes}λ ${
     countdownInterval = setInterval(updateTimer, 1000);
 }
 function checkPassword() {
-    const password = document.getElementById('adminPassword').value;
-    
+const password = document.getElementById('adminPassword').value;
+
     if (password === ADMIN_PASSWORD) {
 // 1. Εμφάνιση του Admin Panel
 document.getElementById('loginForm').style.display = 'none';
@@ -1228,7 +1228,7 @@ const localDraft = localStorage.getItem('footballData');
 
 if (localDraft) {
     // Ρωτάμε τον Admin τι θέλει να κάνει
-    const userChoice = confirm(
+const userChoice = confirm(
         "⚠️ ΒΡΕΘΗΚΑΝ ΑΠΟΘΗΚΕΥΜΕΝΕΣ ΑΛΛΑΓΕΣ ΣΤΟΝ ΥΠΟΛΟΓΙΣΤΗ ΣΟΥ!\n\n" +
         "Πατήστε 'OK' για να συνεχίσετε την επεξεργασία τους (Draft).\n" +
         "Πατήστε 'Ακύρωση' για να φορτώσετε τα δεδομένα του GitHub (Live)."
@@ -1259,7 +1259,7 @@ function refreshAdminForms() {
     loadRoundSelector();
     updateRosterList();
     updateNewsList();
-    
+
     if (data) {
 // Γενικά
 document.getElementById('announcementInput').value = data.announcement || '';
@@ -1290,27 +1290,27 @@ if (data.specialMatch) {
 }
     }
 }
- function loadRoundSelector() {
-    const select = document.getElementById('roundSelect');
+function loadRoundSelector() {
+const select = document.getElementById('roundSelect');
     select.innerHTML = '<option value="">-- Επέλεξε Αγωνιστική --</option>';
-    
+
     data.fixtures.forEach(round => {
-        const option = document.createElement('option');
+const option = document.createElement('option');
         option.value = round.round;
         option.textContent = `Αγωνιστική ${round.round}`;
         select.appendChild(option);
     });
 }
 
-  function loadMatchesForRound() {
-    const roundNum = parseInt(document.getElementById('roundSelect').value);
+function loadMatchesForRound() {
+const roundNum = parseInt(document.getElementById('roundSelect').value);
     if (!roundNum) {
 document.getElementById('matchInputs').innerHTML = '';
 return;
     }
 
-    const round = data.fixtures.find(r => r.round === roundNum);
-    const container = document.getElementById('matchInputs');
+const round = data.fixtures.find(r => r.round === roundNum);
+const container = document.getElementById('matchInputs');
     container.innerHTML = '<h4 style="margin-bottom: 1rem;">Αποτελέσματα & Στατιστικά:</h4>';
 
     round.matches.forEach((match, index) => {
@@ -1329,7 +1329,7 @@ let statsHTML = '';
 
 if (isMyTeamPlaying) {
     // --- SCORERS ---
-    let existingScorersList = '';
+let existingScorersList = '';
     if (match.scorers && match.scorers.length > 0) {
         match.scorers.forEach((s, sIndex) => {
             existingScorersList += `
@@ -1341,7 +1341,7 @@ if (isMyTeamPlaying) {
     }
 
     // --- CLEAN SHEETS (GK) ---
-    let existingCSList = '';
+let existingCSList = '';
     if (match.cleanSheetHolders && match.cleanSheetHolders.length > 0) {
         match.cleanSheetHolders.forEach((gk, gkIndex) => {
             existingCSList += `
@@ -1353,7 +1353,7 @@ if (isMyTeamPlaying) {
     }
 
     // Dropdown παικτών
-    let playerOptions = '<option value="">-- Επέλεξε Παίκτη --</option>';
+let playerOptions = '<option value="">-- Επέλεξε Παίκτη --</option>';
     if (data.roster) {
         data.roster.sort((a,b) => a.name.localeCompare(b.name)).forEach(p => {
             playerOptions += `<option value="${p.name}">${p.name}</option>`;
@@ -1365,7 +1365,7 @@ if (isMyTeamPlaying) {
             <button type="button" class="admin-scorers-btn" onclick="togglePanel('scorer', ${index})">⚽ Σκόρερ</button>
             <button type="button" class="admin-scorers-btn" style="background:#f1f8e9; color:#2e7d32; border-color:#a5d6a7;" onclick="togglePanel('cs', ${index})">🧤 Clean Sheet</button>
         </div>
-        
+
         <div id="scorer-panel-${index}" class="admin-scorers-panel">
             <div style="font-size:0.8rem; font-weight:bold; margin-bottom:5px;">Διαχείριση Σκόρερ:</div>
             <div id="scorers-list-${index}">${existingScorersList}</div>
@@ -1406,7 +1406,7 @@ container.appendChild(div);
 }
 // Βοηθητικές Συναρτήσεις (ΠΡΟΣΘΕΣΕ ΤΕΣ ΚΑΤΩ ΑΠΟ ΤΗΝ loadMatchesForRound)
 function toggleScorerPanel(index) {
-    const panel = document.getElementById(`scorer-panel-${index}`);
+const panel = document.getElementById(`scorer-panel-${index}`);
     if (panel.style.display === 'none' || panel.style.display === '') {
 panel.style.display = 'block';
     } else {
@@ -1415,14 +1415,14 @@ panel.style.display = 'none';
 }
 
 function addScorerToMatch(roundNum, matchIndex) {
-    const select = document.getElementById(`new-scorer-select-${matchIndex}`);
-    const playerName = select.value;
-    
+const select = document.getElementById(`new-scorer-select-${matchIndex}`);
+const playerName = select.value;
+
     if (!playerName) return;
 
     // Βρίσκουμε το ματς και προσθέτουμε τον σκόρερ
-    const round = data.fixtures.find(r => r.round === roundNum);
-    const match = round.matches[matchIndex];
+const round = data.fixtures.find(r => r.round === roundNum);
+const match = round.matches[matchIndex];
 
     if (!match.scorers) match.scorers = [];
     match.scorers.push(playerName);
@@ -1433,9 +1433,9 @@ function addScorerToMatch(roundNum, matchIndex) {
 }
 
 function removeScorer(roundNum, matchIndex, scorerIndex) {
-    const round = data.fixtures.find(r => r.round === roundNum);
-    const match = round.matches[matchIndex];
-    
+const round = data.fixtures.find(r => r.round === roundNum);
+const match = round.matches[matchIndex];
+
     if (match.scorers) {
 match.scorers.splice(scorerIndex, 1);
 saveData(data);
@@ -1444,14 +1444,14 @@ loadMatchesForRound();
 }
 
 function saveResults() {
-    const roundNum = parseInt(document.getElementById('roundSelect').value);
+const roundNum = parseInt(document.getElementById('roundSelect').value);
     if (!roundNum) {
 showToast('Επέλεξε πρώτα μια αγωνιστική!');
 return;
     }
 
-    const round = data.fixtures.find(r => r.round === roundNum);
-    
+const round = data.fixtures.find(r => r.round === roundNum);
+
     round.matches.forEach((match, index) => {
 if (!match.home || !match.away) return;
 
@@ -1472,16 +1472,16 @@ if (isPostponed) {
 } else {
     // Αν ΔΕΝ είναι αναβληθέν, αποθηκεύουμε τα σκορ κανονικά
     match.isPostponed = false;
-    const homeScore = homeInput.value !== '' ? parseInt(homeInput.value) : null;
-    const awayScore = awayInput.value !== '' ? parseInt(awayInput.value) : null;
-    
+const homeScore = homeInput.value !== '' ? parseInt(homeInput.value) : null;
+const awayScore = awayInput.value !== '' ? parseInt(awayInput.value) : null;
+
     match.homeScore = homeScore;
     match.awayScore = awayScore;
 }
     });
 
     saveData(data);
-    
+
     displayStandings();
     displayResults();
     displayFixtures();
@@ -1525,7 +1525,7 @@ if (data && data.announcement && data.announcement.trim() !== '') {
 }
 // --- SMART AUTO-REFRESH (Χωρίς Τρεμόπαιγμα) ---
 setInterval(async () => {
-    const newData = await loadData();
+const newData = await loadData();
 
     if (newData) {
 // 1. ΣΥΓΚΡΙΣΗ: Κρατάμε "φωτογραφία" των παλιών ρυθμίσεων Live/Αγώνα
@@ -1572,8 +1572,8 @@ if (prevMatchData !== newMatchData) {
 
 // 5. Ticker & News
 if (data.announcement) {
-    const tickerText = document.getElementById('announcement-text');
-    const tickerBar = document.getElementById('announcement-ticker');
+const tickerText = document.getElementById('announcement-text');
+const tickerBar = document.getElementById('announcement-ticker');
     if (tickerText && tickerText.textContent !== data.announcement) {
         tickerText.textContent = data.announcement;
         tickerBar.style.display = 'block';
@@ -1626,9 +1626,9 @@ navMenu.classList.remove("active");
 let currentShareId = null;
 
 function openShareModal(id) {
-    const item = data.news.find(n => n.id === id);
+const item = data.news.find(n => n.id === id);
     if(!item) return;
-    
+
     currentShareId = id;
     document.getElementById('shareTitlePreview').textContent = item.title;
     document.getElementById('shareModal').style.display = 'flex';
@@ -1641,17 +1641,17 @@ function closeShareModal() {
 
 function doShare(platform) {
     if(!currentShareId) return;
-    
+
     // Δημιουργία του "Εξυπνου Link"
     // Παίρνει το site url και κολλάει το #news-12345
-    const baseUrl = window.location.href.split('#')[0];
-    const deepLink = `${baseUrl}#news-${currentShareId}`;
-    
-    const item = data.news.find(n => n.id === currentShareId);
-    const text = `🔴 ${item.title}\n\nΔείτε το εδώ: ${deepLink}`;
-    
-    let url = '';
-    
+const baseUrl = window.location.href.split('#')[0];
+const deepLink = `${baseUrl}#news-${currentShareId}`;
+
+const item = data.news.find(n => n.id === currentShareId);
+const text = `🔴 ${item.title}\n\nΔείτε το εδώ: ${deepLink}`;
+
+let url = '';
+
     if (platform === 'whatsapp') {
 url = `https://wa.me/?text=${encodeURIComponent(text)}`;
     } else if (platform === 'viber') {
@@ -1668,7 +1668,7 @@ navigator.clipboard.writeText(text).then(() => {
 });
 return;
     }
-    
+
     if(url) {
 window.open(url, '_blank');
 closeShareModal();
@@ -1678,8 +1678,8 @@ closeShareModal();
 /* --- DEEP LINK HANDLER (Αυτό ανοίγει την είδηση) --- */
 function checkDeepLink() {
     // Ελέγχουμε αν το URL έχει hash τύπου #news-12345
-    const hash = window.location.hash;
-    
+const hash = window.location.hash;
+
     if (hash && hash.startsWith('#news-')) {
 const id = hash.replace('#news-', '');
 
@@ -1694,7 +1694,7 @@ document.getElementById('news').classList.add('active');
 
 // 2. Περιμένουμε λίγο να "χτιστεί" το HTML από το displayNews
 setTimeout(() => {
-    const element = document.getElementById(`news-item-${id}`);
+const element = document.getElementById(`news-item-${id}`);
     if (element) {
         // 3. Ανοίγουμε την είδηση (αφαιρούμε το collapsed)
         element.classList.remove('collapsed');
@@ -1717,12 +1717,12 @@ function checkNewNews() {
     // Βρίσκουμε την πιο πρόσφατη είδηση (η πρώτη στη λίστα μετά το sort)
     // Επειδή έχουμε ήδη σορτάρει τα news στο displayNews, παίρνουμε το πιο πρόσφατο από τα data
     // Θα κάνουμε ένα γρήγορο sort εδώ για σιγουριά
-    const latestNews = [...data.news].sort((a, b) => new Date(b.date) - new Date(a.date))[0];
-    
+const latestNews = [...data.news].sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+
     if (!latestNews) return;
 
-    const latestId = latestNews.id;
-    const lastReadId = localStorage.getItem('lastReadNewsId');
+const latestId = latestNews.id;
+const lastReadId = localStorage.getItem('lastReadNewsId');
 
     // Αν το ID της τελευταίας είδησης είναι διαφορετικό από αυτό που αποθηκεύσαμε
     // σημαίνει ότι υπάρχει κάτι νέο!
@@ -1737,8 +1737,8 @@ function markNewsAsRead() {
     if (!data.news || data.news.length === 0) return;
 
     // Βρίσκουμε πάλι το πιο πρόσφατο
-    const latestNews = [...data.news].sort((a, b) => new Date(b.date) - new Date(a.date))[0];
-    
+const latestNews = [...data.news].sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+
     if (latestNews) {
 // Αποθηκεύουμε στο κινητό του χρήστη ότι "Είδε" αυτή την είδηση
 localStorage.setItem('lastReadNewsId', latestNews.id);
@@ -1749,11 +1749,11 @@ if (badge) badge.style.display = 'none';
     }
 }
 function togglePanel(type, index) {
-    const panelId = type === 'scorer' ? `scorer-panel-${index}` : `cs-panel-${index}`;
-    const panel = document.getElementById(panelId);
-    
+const panelId = type === 'scorer' ? `scorer-panel-${index}` : `cs-panel-${index}`;
+const panel = document.getElementById(panelId);
+
     // Κλείνουμε το άλλο panel για να μην είναι χαμός
-    const otherType = type === 'scorer' ? 'cs' : 'scorer';
+const otherType = type === 'scorer' ? 'cs' : 'scorer';
     document.getElementById(`${otherType}-panel-${index}`).style.display = 'none';
 
     panel.style.display = (panel.style.display === 'none' || panel.style.display === '') ? 'block' : 'none';
@@ -1761,18 +1761,18 @@ function togglePanel(type, index) {
 
 // --- SCORERS LOGIC ---
 function addScorerToMatch(roundNum, matchIndex) {
-    const select = document.getElementById(`new-scorer-select-${matchIndex}`);
-    const playerName = select.value;
+const select = document.getElementById(`new-scorer-select-${matchIndex}`);
+const playerName = select.value;
     if (!playerName) return;
 
-    const round = data.fixtures.find(r => r.round === roundNum);
-    const match = round.matches[matchIndex];
+const round = data.fixtures.find(r => r.round === roundNum);
+const match = round.matches[matchIndex];
 
     if (!match.scorers) match.scorers = [];
     match.scorers.push(playerName);
 
     // Αυτόματη αύξηση γκολ στο Ρόστερ
-    const player = data.roster.find(p => p.name === playerName);
+const player = data.roster.find(p => p.name === playerName);
     if (player) {
 if (!player.goals) player.goals = 0;
 player.goals++;
@@ -1782,9 +1782,9 @@ player.goals++;
 }
 
 function removeScorer(roundNum, matchIndex, scorerIndex) {
-    const round = data.fixtures.find(r => r.round === roundNum);
-    const match = round.matches[matchIndex];
-    
+const round = data.fixtures.find(r => r.round === roundNum);
+const match = round.matches[matchIndex];
+
     if (match.scorers) {
 const playerName = match.scorers[scorerIndex];
 match.scorers.splice(scorerIndex, 1);
@@ -1799,15 +1799,15 @@ saveAndRefresh();
 
 // --- CLEAN SHEETS LOGIC (ΝΕΟ) ---
 function addCleanSheetToMatch(roundNum, matchIndex) {
-    const select = document.getElementById(`new-cs-select-${matchIndex}`);
-    const playerName = select.value;
+const select = document.getElementById(`new-cs-select-${matchIndex}`);
+const playerName = select.value;
     if (!playerName) return;
 
-    const round = data.fixtures.find(r => r.round === roundNum);
-    const match = round.matches[matchIndex];
+const round = data.fixtures.find(r => r.round === roundNum);
+const match = round.matches[matchIndex];
 
     if (!match.cleanSheetHolders) match.cleanSheetHolders = [];
-    
+
     // Έλεγχος: Μην βάλουμε τον ίδιο παίκτη 2 φορές στο ίδιο ματς
     if(match.cleanSheetHolders.includes(playerName)) {
 showToast('Αυτός ο παίκτης έχει ήδη Clean Sheet σε αυτό το ματς!');
@@ -1817,7 +1817,7 @@ return;
     match.cleanSheetHolders.push(playerName);
 
     // Αυτόματη αύξηση Clean Sheets στο Ρόστερ
-    const player = data.roster.find(p => p.name === playerName);
+const player = data.roster.find(p => p.name === playerName);
     if (player) {
 if (!player.cleanSheets) player.cleanSheets = 0;
 player.cleanSheets++;
@@ -1827,9 +1827,9 @@ player.cleanSheets++;
 }
 
 function removeCleanSheetFromMatch(roundNum, matchIndex, csIndex) {
-    const round = data.fixtures.find(r => r.round === roundNum);
-    const match = round.matches[matchIndex];
-    
+const round = data.fixtures.find(r => r.round === roundNum);
+const match = round.matches[matchIndex];
+
     if (match.cleanSheetHolders) {
 const playerName = match.cleanSheetHolders[csIndex];
 match.cleanSheetHolders.splice(csIndex, 1);
@@ -1853,8 +1853,8 @@ function saveAndRefresh() {
 }
 // Εμφάνιση/Απόκρυψη πεδίων εμβόλιμου αγώνα
 function toggleSpecialMatchFields() {
-    const checkbox = document.getElementById('useSpecialMatchCheckbox');
-    const fields = document.getElementById('specialMatchFields');
+const checkbox = document.getElementById('useSpecialMatchCheckbox');
+const fields = document.getElementById('specialMatchFields');
     fields.style.display = checkbox.checked ? 'block' : 'none';
 }
 // Εμφάνιση κουμπιού όταν κατεβαίνουμε λίγο
@@ -1870,12 +1870,12 @@ let currentMatchShareData = {};
 function openSquadModal(home, away, date, time, stadium, mapLink) {
     currentMatchShareData = { home, away, date, time, stadium, mapLink };
 
-    const list = document.getElementById('squadList');
+const list = document.getElementById('squadList');
     list.innerHTML = ''; 
 
     document.getElementById('noSquadCheckbox').checked = false;
 
-    const players = [...data.roster].sort((a, b) => (a.number || 999) - (b.number || 999));
+const players = [...data.roster].sort((a, b) => (a.number || 999) - (b.number || 999));
 
     players.forEach(p => {
 const div = document.createElement('div');
@@ -1902,7 +1902,7 @@ list.appendChild(div);
 function shareFinalSquad() {
     // Κλείσιμο του squad modal
     document.getElementById('squadModal').style.display = 'none';
-    
+
     // Άνοιγμα του PIN modal
     document.getElementById('pinModal').style.display = 'flex';
 }
@@ -1936,7 +1936,7 @@ function clearPin() {
 }
 
 function updatePinDisplay() {
-    const dots = document.querySelectorAll('.pin-dot');
+const dots = document.querySelectorAll('.pin-dot');
     dots.forEach((dot, index) => {
 if (index < enteredPin.length) {
     dot.classList.add('filled');
@@ -1974,12 +1974,12 @@ function closePinModal() {
 
 // Η πραγματική συνάρτηση share (παλιά shareFinalSquad)
 function executeShareSquad() {
-    const { home, away, date, time, stadium, mapLink } = currentMatchShareData;
-    const siteUrl = window.location.origin + window.location.pathname;
-    
-    const hideSquad = document.getElementById('noSquadCheckbox').checked;
+const { home, away, date, time, stadium, mapLink } = currentMatchShareData;
+const siteUrl = window.location.origin + window.location.pathname;
 
-    let squadText = "";
+const hideSquad = document.getElementById('noSquadCheckbox').checked;
+
+let squadText = "";
 
     if (!hideSquad) {
 const checkboxes = document.querySelectorAll('.squad-checkbox:checked');
@@ -1990,16 +1990,16 @@ const mids = [];
 const fwds = [];
 
 checkboxes.forEach(box => {
-    const name = box.value;
-    const rawPos = (box.getAttribute('data-pos') || "").toUpperCase();
-    const firstPos = rawPos.split('/')[0];
-    const match = firstPos.match(/\(([A-Z]+)\)/);
-    
-    let category = 'mid';
+const name = box.value;
+const rawPos = (box.getAttribute('data-pos') || "").toUpperCase();
+const firstPos = rawPos.split('/')[0];
+const match = firstPos.match(/\(([A-Z]+)\)/);
+
+let category = 'mid';
 
     if (match && match[1].length >= 2) {
-        const code = match[1];
-        const secondChar = code[1];
+const code = match[1];
+const secondChar = code[1];
 
         if (secondChar === 'K') {
             category = 'gk';
@@ -2043,14 +2043,14 @@ if (extras) {
 squadText += "\n"; 
     }
 
-    const text = `⚽ *ΕΠΟΜΕΝΟΣ ΑΓΩΝΑΣ* ⚽\n\n` +
-         `🆚 ${home} - ${away}\n` +
-         `📅 ${date}  ⏰ ${time}\n` +
-         `🏟️ ${stadium}\n\n` +
-         `📍 *Χάρτης Γηπέδου:* ${mapLink}\n` +
-         `${squadText}\n` + 
-         `⏳ ${siteUrl}\n\n` + 
-         `*👨‍👩‍👦 Μια οικογένεια, ⛰️ μια ομάδα, 🔥 ένα πάθος*`;
+const text = `⚽ *ΕΠΟΜΕΝΟΣ ΑΓΩΝΑΣ* ⚽\n\n` +
+        `🆚 ${home} - ${away}\n` +
+        `📅 ${date}  ⏰ ${time}\n` +
+        `🏟️ ${stadium}\n\n` +
+        `📍 *Χάρτης Γηπέδου:* ${mapLink}\n` +
+        `${squadText}\n` + 
+        `⏳ ${siteUrl}\n\n` + 
+        `*👨‍👩‍👦 Μια οικογένεια, ⛰️ μια ομάδα, 🔥 ένα πάθος*`;
 
     if (navigator.share) {
 navigator.share({ title: 'Επόμενος Αγώνας', text: text }).catch(console.error);
@@ -2060,7 +2060,3 @@ window.open(viberUrl, '_blank');
     }
 }
 
-<button id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})"><i class="fa-solid fa-chevron-up"></i></button>
-<div id="toast-container"></div>
-</body>
-</html>
